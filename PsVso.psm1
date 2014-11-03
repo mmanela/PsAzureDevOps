@@ -7,6 +7,11 @@ $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 $script:configFileName = "PsVso.json"
 $script:globalConfigPath = Join-Path ([System.Environment]::ExpandEnvironmentVariables("%userprofile%")) $configFileName
 
+$script:config_projectKey =  "project"
+$script:config_accountKey =  "account"
+$script:config_repoKey    =  "repository"
+
+
 function Push-ToVso {
 <#
 .SYNOPSIS
@@ -21,6 +26,7 @@ The path where Push-ToVso looks for a git repo. The default is the current direc
 
 .PARAMETER Account
 Informs Push-ToVso what acount name to use. Can be inherited from a global config.
+If your VSO url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 Informs Push-ToVso what project name to use. Can be inherited from a global config.
@@ -47,10 +53,51 @@ about_PsVso
         [Parameter(Mandatory = $false)]
         [string]$Account,
         [Parameter(Mandatory = $false)]
-        [switch]$Project
+        [string]$Project,
+        [Parameter(Mandatory = $false)]
+        [string]$Repository
     )
 
+    if( -not $Path ) {
+        throw "You cannot specify a null path"
+    }
+
+    if( -not testForGit) {
+        throw "Could not the git exe in the path"
+    }
+
+
+   $gitFolderPath = $Path
+
+   # If path is not path to .git folder make it one
+   if((Split-Path -Leaf $Path).ToLower() -ne ".git") {
+        $gitFolderPath = Join-Path $Path ".git"    
+   }
+
+   if(-not (Test-Path $gitFolderPath)) {
+        throw "Did not find a .git folder at $Path"
+   }
+
+   $config = Get-VsoConfig
    
+   $projectName = getFromValueOrConfig $Project $config_projectKey $config
+   $accountName = getFromValueOrConfig $Account $config_accountKey $config
+   $repoName    = getFromValueOrConfig $Repository $config_repoKey $config
+
+   if(-not $projectName){
+    throw "The project name must be specified as an argument or in the config"
+   }
+
+   if(-not $repoName){
+    throw "The account name must be specified as an argument or in the config"
+   }
+
+   if(-not $repoName){
+    throw "The repository name must be specified as an argument or in the config"
+   }
+
+   
+
 
 }
 
@@ -72,8 +119,7 @@ function Set-VsoConfig
     )
 
     if((-not $Local) -and (-not $Global)) {
-        Write-Error "You must specify Local or Global"
-        return
+        throw "You must specify Local or Global"
     }
 
 
@@ -101,6 +147,9 @@ function Set-VsoConfig
 
     $configJson = ConvertTo-Json $configObject
     Set-Content -Path $configPath -Value $configJson
+
+
+    Write-Host "Wrote to config file at $configPath"
 
 }
 
@@ -136,6 +185,17 @@ function Get-VsoConfig
     }
 }
 
+# Checks a given value and if it is not empty return it 
+# otherwise look up a value from the cached config
+function getFromValueOrConfig($value, $keyName, [hashtable] $config) {
+    if($value) {
+        return $value
+    }
+    else {
+        return $config[$keyName]
+    }
+}
+
 
 function mergeHashTables ([hashtable] $first, [hashtable] $second) {
 
@@ -151,9 +211,9 @@ function mergeHashTables ([hashtable] $first, [hashtable] $second) {
     return $result;
 }
 
-function getLocalConfigPath {
 
-    # Get the local config which is found by probing form the current directory up
+# Get the local config which is found by probing form the current directory up
+function getLocalConfigPath {
 
     $directory = Get-Location
     $localConfigPath = Join-Path $directory $configFileName
@@ -184,6 +244,19 @@ function readConfigFile($filePath) {
 }
 
 
+function testForGit() {
 
+    $hasGit = $false
+    
+    try {
+        git --version | Out-Null
+        $hasGit = $true
+    } catch {
+        $hasGit = $false
+        $ErrorCount -= 1
+    }
+
+    return $hasGit
+}
 
 Export-ModuleMember Push-ToVso, Get-VsoConfig, Set-VsoConfig

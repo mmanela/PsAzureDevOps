@@ -1,0 +1,4 @@
+build/
+Test.xml
+vendor/packages/
+PsVso.json

@@ -28,7 +28,8 @@ PowerShellVersion = '3.0'
 FunctionsToExport = @( 
     'Push-ToVso',
     'Submit-PullRequest',
-    'Set-VsoConfig'
+    'Set-VsoConfig',
+    'Get-VsoConfig'
 )
 
 # # Cmdlets to export from this module
