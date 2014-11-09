@@ -28,6 +28,7 @@ PowerShellVersion = '3.0'
 FunctionsToExport = @( 
     'Push-ToVso',
     'Submit-PullRequest',
+    'Get-BuildStatus',
     'Set-VsoConfig',
     'Get-VsoConfig',    
 

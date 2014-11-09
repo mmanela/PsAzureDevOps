@@ -9,25 +9,29 @@ $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 $script:configFileName = "PsVso.json"
 $script:globalConfigPath = Join-Path ([System.Environment]::ExpandEnvironmentVariables("%userprofile%")) $configFileName
 
-$script:config_projectKey =  "project"
-$script:config_accountKey =  "account"
-$script:config_repoKey    =  "repository"
+$script:config_projectKey           = "project"
+$script:config_accountKey           = "account"
+$script:config_repoKey              = "repository"
+$script:config_buildDefinitionKey   = "builddefinition"
 
 $script:cached_config = @{}
 $script:cached_HttpClient = $null
 $script:cached_accountProjectMap = @{}
 
-$script:projectsUrl = "https://{0}.visualstudio.com/defaultcollection/_apis/projects?api-version=1.0"
-$script:gitReposUrl = "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
-$script:identityUrl = "https://{0}.visualstudio.com/defaultcollection/_api/_identity/CheckName?name={1}"
+$script:projectsUrl =    "https://{0}.visualstudio.com/defaultcollection/_apis/projects?api-version=1.0"
+$script:gitReposUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
+$script:identityUrl =    "https://{0}.visualstudio.com/defaultcollection/_api/_identity/CheckName?name={1}"
 $script:pullRequestUrl = "https://{0}.visualstudio.com/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
+$script:buildsUrl =      "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&api-version=1.0"
 
 # Temp overrides to run against a local TFS server
-$script:projectsUrl = "http://{0}:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
-$script:gitReposUrl = "http://{0}:8080/tfs/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
-$script:identityUrl = "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
-$script:pullRequestUrl = "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
-
+if($false) {
+    $script:projectsUrl =    "http://{0}:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
+    $script:gitReposUrl =    "http://{0}:8080/tfs/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
+    $script:identityUrl =    "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
+    $script:pullRequestUrl = "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
+    $script:buildsUrl =      "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&api-version=1.0"
+}
 
 
 
@@ -38,10 +42,7 @@ Clones the current git repo to a VSO project.
 
 .DESCRIPTION
 Calling Push-ToVso will clone your git repo to a VSO project. If you don't specify a project it will try to use the default one.
-If no default project is configure it will error.
-
-.PARAMETER Path
-The path where Push-ToVso looks for a git repo. The default is the current directory.
+If no default project is configure it will error. You must run this command from inside of your git repo folder.
 
 .PARAMETER Repository
 The repository name to use. Can be inherited from a config file.
@@ -71,8 +72,6 @@ about_PsVso
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$Path = ".",
-        [Parameter(Mandatory = $false)]
         [string]$Repository,
         [Parameter(Mandatory = $false)]
         [string]$Account,
@@ -80,25 +79,9 @@ about_PsVso
         [string]$Project
     )
 
-    if( -not $Path ) {
-        throw "You cannot specify a null path"
-    }
-
     if( -not (testForGit)) {
-        throw "Could not the git exe in the path"
+        throw "Could not find the git exe in the path"
     }
-
-
-   $gitFolderPath = $Path
-
-   # If path is not path to .git folder make it one
-   if((Split-Path -Leaf $Path).ToLower() -ne ".git") {
-        $gitFolderPath = Join-Path $Path ".git"    
-   }
-
-   if(-not (Test-Path $gitFolderPath)) {
-        throw "Did not find a .git folder at $Path"
-   }
 
    refreshCachedConfig
    
@@ -190,9 +173,9 @@ about_PsVso
 
     refreshCachedConfig
 
-    $accountName = getFromValueOrConfig $Account $config_accountKey
-    $projectName = getFromValueOrConfig $Project $config_projectKey
-    $repoName    = getFromValueOrConfig $Repository $config_repoKey
+    $accountName = getFromValueOrConfig $Account $script:config_accountKey
+    $projectName = getFromValueOrConfig $Project $script:config_projectKey
+    $repoName    = getFromValueOrConfig $Repository $script:config_repoKey
 
     $reviewerIds = @()
     if($Reviewers) {
@@ -219,11 +202,74 @@ about_PsVso
     $repoId = getRepoId $accountName $projectName $repoName
 
 
-    $url = [System.String]::Format($script:pullRequestUrl, $account, $repoId)
+    $url = [System.String]::Format($script:pullRequestUrl, $accountName, $repoId)
     $repoResults = postUrl $url $payload
 
     if($repoResults) {
          Write-Host "Pull request created at $($repoResults.url)"
+    }
+
+}
+
+
+function Get-BuildStatus {
+<#
+.SYNOPSIS
+Gets the current status of the build
+
+.DESCRIPTION
+Get-BuildStatus will query your VSO project to see the status of the last build. This is usefull to make sure you don't push 
+changes when the build is not green
+
+.PARAMETER BuildDefinition
+The name of the build definition.  Can be inherited from a config file.
+
+.PARAMETER Account
+The acount name to use. Can be inherited from a config file.
+If your VSO url is hello.visualstudio.com then this value should be hello.
+
+.PARAMETER Project
+The project name to use. Can be inherited from a config file.
+
+.Example
+Get-BuildStatus -BuildDefinition myBuildDef -Account myAccount -Project myProject
+
+.LINK
+about_PsVso
+
+#>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$BuildDefinition,
+        [Parameter(Mandatory = $false)]
+        [string]$Account,
+        [Parameter(Mandatory = $false)]
+        [string]$Project
+    )
+
+    refreshCachedConfig
+
+    $definitionName = getFromValueOrConfig $BuildDefinition $script:config_buildDefinitionKey
+    $accountName    = getFromValueOrConfig $Account $script:config_accountKey
+    $projectName    = getFromValueOrConfig $Project $script:config_projectKey
+
+    $buildResults = getBuilds $accountName $projectName $definitionName
+
+    if($buildResults) {
+        if($buildResults[0].status -eq "succeeded") {
+            Write-Host "Build $($buildResults[0].buildNumber) SUCCEEDED" -ForegroundColor Green
+        }
+        elseif($buildResults[0].status -eq "failed") {
+            Write-Host "Build $($buildResults[0].buildNumber) FAILED" -ForegroundColor Red
+        }
+        else {
+            Write-Host "Build $($buildResults[0].buildNumber) $($buildResults[0].status.ToUpper())"
+        }
+        
+    }
+    else {
+        Write-Warning "Unable to find build for $definitionName"
     }
 
 }
@@ -402,6 +448,19 @@ function testForGit() {
 
 # Http Helpers
 
+function getBuilds($account, $project, $definition) {
+    
+    $url = [System.String]::Format($script:buildsUrl, $account, $project, $definition)
+    $buildResults = getUrl $url
+
+
+    if($buildResults) {
+        return $buildResults.value
+    }
+    else {
+        return $null
+    }
+}
 
 function createRepo($account, $project, $repo) {
    $projectId = getProjectId $account $project
@@ -597,4 +656,4 @@ function getHttpClient() {
 
 
 
-Export-ModuleMember Push-ToVso, Submit-PullRequest, Get-VsoConfig, Set-VsoConfig, getUrl, postUrl, getProjects, getRepos, getProjectId, getIdentityId, getRepoId
+Export-ModuleMember Push-ToVso, Submit-PullRequest, Get-BuildStatus, Get-VsoConfig, Set-VsoConfig, getUrl, postUrl, getProjects, getRepos, getProjectId, getIdentityId, getRepoId
