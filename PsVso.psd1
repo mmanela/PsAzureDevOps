@@ -26,11 +26,26 @@ PowerShellVersion = '3.0'
 
 # Functions to export from this module
 FunctionsToExport = @( 
-    'Push-ToVso',
+    'PushTo-Vso',
     'Submit-PullRequest',
     'Set-VsoConfig',
-    'Get-VsoConfig'
+    'Get-VsoConfig',    
+
+
+    'queryRepos',
+    'getProjectId',
+    'queryProjects',
+    'getUrl',
+    'postUrl'
 )
+
+
+RequiredAssemblies = @( 
+    "lib\VsoOM\Microsoft.VisualStudio.Services.Client.dll",
+    "lib\VsoOM\Microsoft.VisualStudio.Services.WebApi.dll",
+    "lib\VsoOM\Microsoft.VisualStudio.Services.Common.dll"
+)
+
 
 # # Cmdlets to export from this module
 # CmdletsToExport = '*'
@@ -76,7 +91,7 @@ PrivateData = @{
         # If true, the LicenseUrl points to an end-user license (not just a source license) which requires the user agreement before use.
         # RequireLicenseAcceptance = ""
 
-        # Indicates this is a pre-release/testing version of the module.
+        # Indicates this is a pre-release/  ing version of the module.
         IsPrerelease = 'False'
     }
 }
