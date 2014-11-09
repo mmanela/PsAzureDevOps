@@ -26,33 +26,37 @@ $script:gitReposUrl = "http://mmanela:8080/tfs/defaultcollection/git/_apis/git/r
 
 
 
-function PushTo-Vso {
+
+function Push-ToVso {
 <#
 .SYNOPSIS
 Clones the current git repo to a VSO project.
 
 .DESCRIPTION
-Calling PushTo-Vso will clone your git repo to a VSO project. If you don't specify a project it will try to use the default one.
+Calling Push-ToVso will clone your git repo to a VSO project. If you don't specify a project it will try to use the default one.
 If no default project is configure it will error.
 
 .PARAMETER Path
-The path where PushTo-Vso looks for a git repo. The default is the current directory.
+The path where Push-ToVso looks for a git repo. The default is the current directory.
+
+.PARAMETER Repository
+The repository name to use. Can be inherited from a config file.
 
 .PARAMETER Account
-Informs PushTo-Vso what acount name to use. Can be inherited from a global config.
+The acount name to use. Can be inherited from a config file.
 If your VSO url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
-Informs PushTo-Vso what project name to use. Can be inherited from a global config.
+The project name to use. Can be inherited from a config file.
 
 .Example
-PushTo-Vso 
+Push-ToVso 
 
 This will look for a git repo in the current directory and try to find an already configured project/account. 
 It will then create a repo in that project and push to it. 
 
 .Example
-PushTo-Vso -Project MyProject -Account MyAccount
+Push-ToVso -Project MyProject -Account MyAccount
 
 Finds a git repo in current directory and adds it to the given account/project
 
@@ -65,11 +69,11 @@ about_PsVso
         [Parameter(Mandatory = $false)]
         [string]$Path = ".",
         [Parameter(Mandatory = $false)]
+        [string]$Repository,
+        [Parameter(Mandatory = $false)]
         [string]$Account,
         [Parameter(Mandatory = $false)]
-        [string]$Project,
-        [Parameter(Mandatory = $false)]
-        [string]$Repository
+        [string]$Project
     )
 
     if( -not $Path ) {
@@ -98,22 +102,12 @@ about_PsVso
    $projectName = getFromValueOrConfig $Project $config_projectKey
    $repoName    = getFromValueOrConfig $Repository $config_repoKey
 
-   if(-not $accountName){
-    throw "The account name must be specified as an argument or in the config"
-   }
-
-   if(-not $projectName){
-    throw "The project name must be specified as an argument or in the config"
-   }
-
-   if(-not $repoName){
-    throw "The repository name must be specified as an argument or in the config"
-   }
-
    # Create this repo online
    $repoResult = createRepo $accountName $projectName $repoName
    $remoteUrl = $repoResult.remoteUrl
 
+   # Figure out if origin is already defined
+   # if so we try to use the psvso remote name
    $currentRemotes = git remote
    $remoteName = "origin"
    if($currentRemotes -and $currentRemotes.Contains("origin")) {
@@ -126,6 +120,79 @@ about_PsVso
 
     Write-Host "Pushing repository"
     git push -u $remoteName --all 
+}
+
+
+function Submit-PullRequest {
+<#
+.SYNOPSIS
+Submits a pull request to Visual Studio Online
+
+.DESCRIPTION
+Calling Submit-PullRequest will create a pull request between the configured branches in your Visual Studio Online project.
+
+
+.PARAMETER Title
+The title of the pull request.
+
+.PARAMETER Description
+The description of the pull request.
+
+.PARAMETER SourceBranch
+The branch you want to merge from.
+
+.PARAMETER TargetBranch
+The branch you want to merge to.
+
+.PARAMETER Repository
+The repository name to use. Can be inherited from a config file.
+
+.PARAMETER Account
+The acount name to use. Can be inherited from a config file.
+If your VSO url is hello.visualstudio.com then this value should be hello.
+
+.PARAMETER Project
+The project name to use. Can be inherited from a config file.
+
+.Example
+Push-ToVso 
+
+This will look for a git repo in the current directory and try to find an already configured project/account. 
+It will then create a repo in that project and push to it. 
+
+.Example
+Push-ToVso -Project MyProject -Account MyAccount
+
+Finds a git repo in current directory and adds it to the given account/project
+
+.LINK
+about_PsVso
+
+#>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Title,
+        [Parameter(Mandatory = $false)]
+        [string]$Description,
+        [Parameter(Mandatory = $true)]
+        [string]$SourceBranch,
+        [Parameter(Mandatory = $true)]
+        [string]$TargetBranch,
+        [Parameter(Mandatory = $false)]
+        [string]$Repository,
+        [Parameter(Mandatory = $false)]
+        [string]$Account,
+        [Parameter(Mandatory = $false)]
+        [string]$Project
+    )
+
+   refreshCachedConfig
+   
+   $accountName = getFromValueOrConfig $Account $config_accountKey
+   $projectName = getFromValueOrConfig $Project $config_projectKey
+   $repoName    = getFromValueOrConfig $Repository $config_repoKey
+
 }
 
 
@@ -221,12 +288,19 @@ function refreshCachedConfig() {
 # Checks a given value and if it is not empty return it 
 # otherwise look up a value from the cached config
 function getFromValueOrConfig($value, $keyName, [hashtable] $config) {
-    if($value) {
-        return $value
+
+
+    # If passed in value is empty then check the config
+    if(-not $value) {
+        $value = $script:cached_config[$keyName]
     }
-    else {
-        return $script:cached_config[$keyName]
+
+    # If we can't find a value throw
+    if(-not $value) {
+        throw "The $keyName name must be specified as an argument or in the config"
     }
+
+    return $value
 }
 
 
@@ -319,9 +393,6 @@ function createRepo($account, $project, $repo) {
 
 function queryRepos($account, $project) {
 
-    $account = getFromValueOrConfig $account $script:config_accountKey
-    $project = getFromValueOrConfig $project $script:config_projectKey
-
     $url = [System.String]::Format($script:gitReposUrl, $account, $project)
     $repoResults = getUrl $url
 
@@ -365,8 +436,6 @@ function getProjectIdFromCache($account, $project) {
 
 
 function queryProjects($account) {
-
-    $account = getFromValueOrConfig $account $script:config_accountKey
 
     $url = [System.String]::Format($script:projectsUrl, $account)
     $projectResults = getUrl $url
@@ -468,4 +537,4 @@ function getHttpClient() {
 
 
 
-Export-ModuleMember PushTo-Vso, Get-VsoConfig, Set-VsoConfig, getUrl, postUrl, queryProjects, queryRepos, getProjectId
+Export-ModuleMember Push-ToVso, Submit-PullRequest, Get-VsoConfig, Set-VsoConfig, getUrl, postUrl, queryProjects, queryRepos, getProjectId
