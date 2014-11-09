@@ -32,9 +32,11 @@ FunctionsToExport = @(
     'Get-VsoConfig',    
 
 
-    'queryRepos',
+    'getRepos',
     'getProjectId',
-    'queryProjects',
+    'getProjects',
+    'getIdentityId',
+    'getRepoId',
     'getUrl',
     'postUrl'
 )

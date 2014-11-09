@@ -19,10 +19,14 @@ $script:cached_accountProjectMap = @{}
 
 $script:projectsUrl = "https://{0}.visualstudio.com/defaultcollection/_apis/projects?api-version=1.0"
 $script:gitReposUrl = "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
+$script:identityUrl = "https://{0}.visualstudio.com/defaultcollection/_api/_identity/CheckName?name={1}"
+$script:pullRequestUrl = "https://{0}.visualstudio.com/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
 
-
-$script:projectsUrl = "http://mmanela:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
-$script:gitReposUrl = "http://mmanela:8080/tfs/defaultcollection/git/_apis/git/repositories?api-version=1.0"
+# Temp overrides to run against a local TFS server
+$script:projectsUrl = "http://{0}:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
+$script:gitReposUrl = "http://{0}:8080/tfs/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
+$script:identityUrl = "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
+$script:pullRequestUrl = "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
 
 
 
@@ -98,9 +102,9 @@ about_PsVso
 
    refreshCachedConfig
    
-   $accountName = getFromValueOrConfig $Account $config_accountKey
-   $projectName = getFromValueOrConfig $Project $config_projectKey
-   $repoName    = getFromValueOrConfig $Repository $config_repoKey
+   $accountName = getFromValueOrConfig $Account $script:config_accountKey
+   $projectName = getFromValueOrConfig $Project $script:config_projectKey
+   $repoName    = getFromValueOrConfig $Repository $script:config_repoKey
 
    # Create this repo online
    $repoResult = createRepo $accountName $projectName $repoName
@@ -144,6 +148,9 @@ The branch you want to merge from.
 .PARAMETER TargetBranch
 The branch you want to merge to.
 
+.PARAMETER Reviewers
+The list of people to add to the PR. This should be their display name or email address.
+
 .PARAMETER Repository
 The repository name to use. Can be inherited from a config file.
 
@@ -155,15 +162,7 @@ If your VSO url is hello.visualstudio.com then this value should be hello.
 The project name to use. Can be inherited from a config file.
 
 .Example
-Push-ToVso 
-
-This will look for a git repo in the current directory and try to find an already configured project/account. 
-It will then create a repo in that project and push to it. 
-
-.Example
-Push-ToVso -Project MyProject -Account MyAccount
-
-Finds a git repo in current directory and adds it to the given account/project
+Submit-PullRequest -Title "This is good"  -Reviewers "Matthew Manela", "john@gmail.com"  -Repository someRepo -SourceBranch someBranch -TargetBranch master -Account myAccount -Project myProject
 
 .LINK
 about_PsVso
@@ -180,6 +179,8 @@ about_PsVso
         [Parameter(Mandatory = $true)]
         [string]$TargetBranch,
         [Parameter(Mandatory = $false)]
+        [string[]]$Reviewers,
+        [Parameter(Mandatory = $false)]
         [string]$Repository,
         [Parameter(Mandatory = $false)]
         [string]$Account,
@@ -187,11 +188,43 @@ about_PsVso
         [string]$Project
     )
 
-   refreshCachedConfig
-   
-   $accountName = getFromValueOrConfig $Account $config_accountKey
-   $projectName = getFromValueOrConfig $Project $config_projectKey
-   $repoName    = getFromValueOrConfig $Repository $config_repoKey
+    refreshCachedConfig
+
+    $accountName = getFromValueOrConfig $Account $config_accountKey
+    $projectName = getFromValueOrConfig $Project $config_projectKey
+    $repoName    = getFromValueOrConfig $Repository $config_repoKey
+
+    $reviewerIds = @()
+    if($Reviewers) {
+        $reviewerIds = $Reviewers | ForEach-Object { getIdentityId $accountName $_ } | Where-Object { $_ -ne $null }
+    }
+
+    $refPrefix = "refs/heads/"
+    if(-not $SourceBranch.ToLower().StartsWith("$refPrefix")) {
+        $SourceBranch = $refPrefix + $SourceBranch
+    }   
+
+    if(-not $TargetBranch.ToLower().StartsWith("$refPrefix")) {
+        $TargetBranch = $refPrefix + $TargetBranch
+    }
+
+    $payload = @{
+        "sourceRefName" = $SourceBranch
+        "targetRefName" = $TargetBranch
+        "title"= $Title
+        "description" = $Description
+        "reviewers" = $reviewerIds | ForEach-Object { @{ "id" = $_ } }
+    }
+
+    $repoId = getRepoId $accountName $projectName $repoName
+
+
+    $url = [System.String]::Format($script:pullRequestUrl, $account, $repoId)
+    $repoResults = postUrl $url $payload
+
+    if($repoResults) {
+         Write-Host "Pull request created at $($repoResults.url)"
+    }
 
 }
 
@@ -370,14 +403,12 @@ function testForGit() {
 # Http Helpers
 
 
-
-
 function createRepo($account, $project, $repo) {
    $projectId = getProjectId $account $project
-   $payload = @{}
-   $payload["name"] = $repo;
-   $payload["project"] = @{ "id" = $projectId }
-
+   $payload = @{
+    "name" = $repoName
+    "project" = @{ "id" = $projectId }
+   }
 
     $url = [System.String]::Format($script:gitReposUrl, $account, $project)
     $repoResults = postUrl $url $payload
@@ -385,13 +416,10 @@ function createRepo($account, $project, $repo) {
     if($repoResults) {
         return $repoResults
     }
-    else {
-        throw "Unable to create repository"
-    }
 }
 
 
-function queryRepos($account, $project) {
+function getRepos($account, $project) {
 
     $url = [System.String]::Format($script:gitReposUrl, $account, $project)
     $repoResults = getUrl $url
@@ -403,6 +431,19 @@ function queryRepos($account, $project) {
         return $null
     }
 }
+
+function getRepoId($account, $project, $repository) {
+    
+    $repos = getRepos $account $project
+    $repos = @($repos | Where-Object { $_.name -eq $repository })
+
+    if($repos.Count -le 0){
+        throw "Unable to find repository id for a repository named $repository"
+    }
+
+    return $repos[0].id
+}
+
 
 function getProjectId($account, $project) {
     
@@ -435,7 +476,7 @@ function getProjectIdFromCache($account, $project) {
 }
 
 
-function queryProjects($account) {
+function getProjects($account) {
 
     $url = [System.String]::Format($script:projectsUrl, $account)
     $projectResults = getUrl $url
@@ -448,9 +489,28 @@ function queryProjects($account) {
     }
 }
 
+function getIdentityId($account, $name) {
+
+    $url = [System.String]::Format($script:identityUrl, $account, $name)
+    
+    try {
+        $identityResult = getUrl $url
+    } catch {
+
+    }
+
+    if($identityResult -and $identityResult.Identity.TeamFoundationId) {
+        return $identityResult.Identity.TeamFoundationId
+    }
+    else {
+        Write-Warning "Unable to resolve the name $name"
+        return $null
+    }
+}
+
 function buildProjectMap($account) {
     
-    $projectResults = queryProjects $account
+    $projectResults = getProjects $account
 
     if($projectResults) {
         $projectIdMap = @{}
@@ -537,4 +597,4 @@ function getHttpClient() {
 
 
 
-Export-ModuleMember Push-ToVso, Submit-PullRequest, Get-VsoConfig, Set-VsoConfig, getUrl, postUrl, queryProjects, queryRepos, getProjectId
+Export-ModuleMember Push-ToVso, Submit-PullRequest, Get-VsoConfig, Set-VsoConfig, getUrl, postUrl, getProjects, getRepos, getProjectId, getIdentityId, getRepoId
