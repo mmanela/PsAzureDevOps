@@ -2,7 +2,6 @@ $psake.use_exit_on_error = $true
 properties {
     $baseDir = (Split-Path -parent $psake.build_script_dir)
 
-    $filesDir = "$baseDir\_build"
     $packageDir = "$baseDir\_package"
 
     $version="1.0.0"
@@ -23,27 +22,8 @@ properties {
 
 Task default -depends Build
 Task Build -depends Test, Package
-Task Package -depends Clean-PackageFiles, Version-Module, Pack-Zip, Pack-Nuget, Unversion-Module
+Task Package -depends Clean-PackageFiles, Version-Module, Pack-Nuget
 Task Push-Public -depends Push-Chocolatey
-
-
-
-task Pack-Zip {
-    
-    create $filesDir, $packageDir
-    copy-item "$baseDir\LICENSE.txt" -destination $filesDir
-    copy-item "$baseDir\PsVso.psm1" -destination $filesDir
-    copy-item "$baseDir\PsVso.psd1" -destination $filesDir
-    roboexec {robocopy "$baseDir\lib" "$filesDir\lib" /S }
-    roboexec {robocopy "$baseDir\functions" "$filesDir\functions" /S }
-    roboexec {robocopy "$baseDir\cmdlets" "$filesDir\cmdlets" /S }
-    roboexec {robocopy "$baseDir\en-US" "$filesDir\en-US" /S }
-    
-
-    pushd $filesDir
-    ."$env:chocolateyInstall\bin\7za.bat" a -tzip "$packageDir\PsVso.zip" *
-    popd
-}
 
 
 Task Test {
@@ -60,29 +40,16 @@ Task Test {
 }
 
 Task Version-Module {
-    (Get-Content "$baseDir\PsVso.psm1") `
-      | % {$_ -replace "\`$version\`$", "$version" } `
-      | % {$_ -replace "\`$sha\`$", "$changeset" } `
-      | Set-Content "$baseDir\PsVso.psm1"
-
     (Get-Content "$baseDir\PsVso.psd1") `
-      | % {$_ -replace "\`$version\`$", "$version" } `
+      | % {$_ -replace "^ModuleVersion = '.*'`$", "ModuleVersion = '$version'" } `
       | Set-Content "$baseDir\PsVso.psd1"
 }
 
-Task Unversion-Module {
-    (Get-Content "$baseDir\PsVso.psm1") `
-      | % {$_ -replace "$version", "`$version`$" } `
-      | % {$_ -replace "$changeset", "`$sha`$" } `
-      | Set-Content "$baseDir\PsVso.psm1"
-
-
-    (Get-Content "$baseDir\PsVso.psd1") `
-      | % {$_ -replace "$version", "`$version`$" } `
-      | Set-Content "$baseDir\PsVso.psd1"
-}
 
 Task Pack-Nuget {
+
+    create $packageDir
+    
     exec {
       . $nugetExe pack "$baseDir\PsVso.nuspec" -OutputDirectory $packageDir `
       -NoPackageAnalysis -version $version
@@ -95,7 +62,6 @@ Task Push-Chocolatey -depends Set-Version {
 
 Task Clean-PackageFiles {
     clean $packageDir
-    clean $filesDir
 }
 
 
