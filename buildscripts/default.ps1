@@ -4,17 +4,17 @@ properties {
 
     $packageDir = "$baseDir\_package"
 
-    $version="1.0.0"
-    $changeset = "0"
 
-<#
     if(Get-Command Git -ErrorAction SilentlyContinue) {
         $versionTag = git describe --abbrev=0 --tags
         $version = $versionTag + "."
         $version += (git log $($version + '..') --pretty=oneline | measure-object).Count
         $changeset=(git log -1 $($versionTag + '..') --pretty=format:%H)
     }
-#>
+    else {
+        $version="1.0.0"
+        $changeset = "0"
+    }
 
     $nugetExe = "$env:ChocolateyInstall\ChocolateyInstall\nuget"
 }
