@@ -1,7 +1,9 @@
 $psake.use_exit_on_error = $true
 properties {
     $baseDir = (Split-Path -parent $psake.build_script_dir)
-    $packageDir = "$baseDir\_build"
+
+    $filesDir = "$baseDir\_build"
+    $packageDir = "$baseDir\_package"
 
     $version="1.0.0"
     $changeset = "0"
@@ -21,8 +23,28 @@ properties {
 
 Task default -depends Build
 Task Build -depends Test, Package
-Task Package -depends Clean-PackageFiles, Version-Module, Pack-Nuget, Unversion-Module
+Task Package -depends Clean-PackageFiles, Version-Module, Pack-Zip, Pack-Nuget, Unversion-Module
 Task Push-Public -depends Push-Chocolatey
+
+
+
+task Pack-Zip {
+    
+    create $filesDir, $packageDir
+    copy-item "$baseDir\LICENSE.txt" -destination $filesDir
+    copy-item "$baseDir\PsVso.psm1" -destination $filesDir
+    copy-item "$baseDir\PsVso.psd1" -destination $filesDir
+    roboexec {robocopy "$baseDir\lib" "$filesDir\lib" /S }
+    roboexec {robocopy "$baseDir\functions" "$filesDir\functions" /S }
+    roboexec {robocopy "$baseDir\cmdlets" "$filesDir\cmdlets" /S }
+    roboexec {robocopy "$baseDir\en-US" "$filesDir\en-US" /S }
+    
+
+    pushd $filesDir
+    ."$env:chocolateyInstall\bin\7za.bat" a -tzip "$packageDir\PsVso.zip" *
+    popd
+}
+
 
 Task Test {
     pushd "$baseDir"
@@ -37,7 +59,7 @@ Task Test {
     popd
 }
 
-Task Version-Module{
+Task Version-Module {
     (Get-Content "$baseDir\PsVso.psm1") `
       | % {$_ -replace "\`$version\`$", "$version" } `
       | % {$_ -replace "\`$sha\`$", "$changeset" } `
@@ -48,7 +70,7 @@ Task Version-Module{
       | Set-Content "$baseDir\PsVso.psd1"
 }
 
-Task Unversion-Module{
+Task Unversion-Module {
     (Get-Content "$baseDir\PsVso.psm1") `
       | % {$_ -replace "$version", "`$version`$" } `
       | % {$_ -replace "$changeset", "`$sha`$" } `
@@ -61,11 +83,6 @@ Task Unversion-Module{
 }
 
 Task Pack-Nuget {
-    if (Test-Path $packageDir) {
-      Remove-Item $packageDir -Recurse -Force
-    }
-
-    mkdir $packageDir
     exec {
       . $nugetExe pack "$baseDir\PsVso.nuspec" -OutputDirectory $packageDir `
       -NoPackageAnalysis -version $version
@@ -78,12 +95,26 @@ Task Push-Chocolatey -depends Set-Version {
 
 Task Clean-PackageFiles {
     clean $packageDir
+    clean $filesDir
 }
 
 
+function create([string[]]$paths) {
+  foreach ($path in $paths) {
+    if(-not (Test-Path $path)) {
+      new-item -path $path -type directory | out-null
+    }
+  }
+}
 
 function clean([string[]]$paths) {
     foreach ($path in $paths) {
         remove-item -force -recurse $path -ErrorAction SilentlyContinue
     }
+}
+
+
+function roboexec([scriptblock]$cmd) {
+    & $cmd | out-null
+    if ($lastexitcode -eq 0) { throw "No files were copied for command: " + $cmd }
 }

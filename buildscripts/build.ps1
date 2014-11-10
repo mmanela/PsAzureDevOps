@@ -11,6 +11,7 @@ if(-not $env:ChocolateyInstall -or -not (Test-Path "$env:ChocolateyInstall")){
 
 if(!(Test-Path $env:ChocolateyInstall\lib\Psake*)) { cinst psake }
 if(!(Test-Path $env:ChocolateyInstall\lib\pester*)) { cinst pester }
+if(!(Test-Path $env:ChocolateyInstall\lib\7zip.CommandLine*)) { cinst 7zip.CommandLine }
 
 if($Help){ 
   try {

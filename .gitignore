@@ -1,4 +1,5 @@
 _build/
+_package/
 Test.xml
 vendor/packages/
 PsVso.json
