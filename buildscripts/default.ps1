@@ -4,6 +4,7 @@ properties {
     $packageDir = "$baseDir\_build"
 
     $version="1.0.0"
+    $changeset = "0"
 
 <#
     if(Get-Command Git -ErrorAction SilentlyContinue) {
@@ -55,7 +56,7 @@ Task Unversion-Module{
 
 
     (Get-Content "$baseDir\PsVso.psd1") `
-      | % {$_ -replace "$version", "\`$version\`$" } `
+      | % {$_ -replace "$version", "`$version`$" } `
       | Set-Content "$baseDir\PsVso.psd1"
 }
 

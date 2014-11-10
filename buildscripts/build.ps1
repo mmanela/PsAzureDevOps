@@ -1,7 +1,6 @@
 param (
     [string]$Action="default",
     [switch]$Help,
-    [string]$VmName,
     [string]$package,
     [string]$testName
 )
