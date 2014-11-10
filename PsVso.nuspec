@@ -10,14 +10,19 @@
     <authors>Matthew Manela</authors>
     <projectUrl>https://github.com/mmanela/PsVso</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <releaseNotes>
+    </releaseNotes>
   </metadata>
   <files>
+    <file src="chocolatey\chocolateyinstall.ps1" target="tools"/>
+    <file src="chocolatey\setup.ps1" target="tools"/>  
     <file src="PsVso.psm1" target="tools" />
     <file src="PsVso.psd1" target="tools" />
     <file src="lib\*.*" target="tools\lib" />
     <file src="functions\**\*.*" target="tools\functions" />
     <file src="cmdlets\**\*.*" target="tools\cmdlets" />
     <file src="en-US\*.*" target="tools\en-US" />
+  
   </files>
 </package>
 
