@@ -4,7 +4,7 @@
 RootModule = 'PsVso.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
+ModuleVersion = '0.1.0'
 
 # ID used to uniquely identify this module
 GUID = '30f59c9a-b2b9-4300-b53a-d3f9e78c0cc0'

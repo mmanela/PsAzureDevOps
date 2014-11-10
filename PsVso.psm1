@@ -1,6 +1,4 @@
 # PsVso
-# Version: $version$
-# Changeset: $sha$
 
 $ErrorActionPreference = "Stop"
 
