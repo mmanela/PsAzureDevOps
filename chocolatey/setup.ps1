@@ -25,12 +25,8 @@ function Install-PsVso($here) {
 
     $successMsg = @"
 The PsVso Module has been copied to $PsVsoPath and added to your Module path. 
-You will need to open a new console for the path to be visible.
-To import the module so
-PS:>Import-Module PsVso
 
 To find more info visit https://github.com/mmanela/PsVso or use:
-PS:>Import-Module PsVso
 PS:>Get-Help PsVso
 "@
     Write-Host $successMsg
