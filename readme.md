@@ -23,10 +23,17 @@ Usage
 
 PsVso contains several cmdlets to automate some common operations. You can see details of each one through normal PowerShell docs. 
 
-| Cmdlet        | Description   |
-| ------------- |---------------|
-| Push-ToVso      | Takes a local git repo, creates a corresponding repo in your VSO project, adds that repo as a remote origin and pushes your local repo to it. |
-| Submit-PullRequest      | Submits a pull request      |
-| Get-BuildStatus | Gets the status of the last build      |
-| Set-VsoConfig | Sets a config value for use in other PsVso functions |
-| Get-VsoConfig | Gets the config values |
+- **Push-ToVso**      
+      Takes a local git repo, creates a corresponding repo in your VSO project, adds that repo as a remote origin and pushes your local repo to it.
+
+- **Submit-PullRequest**
+      Submits a pull request
+
+- **Get-BuildStatus**
+    Gets the status of the last build
+
+- **Set-VsoConfig**
+    Sets a config value for use in other PsVso functions
+
+- **Get-VsoConfig**
+    Gets the config values
