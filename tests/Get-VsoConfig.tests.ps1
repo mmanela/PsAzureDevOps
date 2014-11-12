@@ -11,11 +11,11 @@ Describe "Get-VsoConfig" {
     $localConfig = '{"project": "localProject", "repository":"localRepository"}'
 
     $appData = [System.Environment]::ExpandEnvironmentVariables("%userprofile%")
-    Write-Host "*$appData*"
-    Context "When asking for just local config" {
-        Mock Get-Content { return $globalConfig } -ParameterFilter { $path -like "*$appData*"} 
-        Mock Get-Content { return $localConfig } -ParameterFilter { -not ($path -like "*$appData*") } 
 
+    Mock Get-Content { return $globalConfig } -ParameterFilter { $path -like "*$appData*"} 
+    Mock Get-Content { return $localConfig } -ParameterFilter { -not ($path -like "*$appData*") } 
+
+    Context "When asking for just local config" {
         $result = Get-VsoConfig -Local
         Write-Host $result
 
@@ -31,9 +31,6 @@ Describe "Get-VsoConfig" {
 
 
     Context "When asking for just global config" {
-        Mock Get-Content { return $globalConfig} -ParameterFilter { $path -like "*$appData*"}
-        Mock Get-Content { return $localConfig} -ParameterFilter {-not ($path -like "*$appData*")}
-
         $result = Get-VsoConfig -Global
 
         It "returns all local values"{
@@ -47,9 +44,6 @@ Describe "Get-VsoConfig" {
     }
 
     Context "When asking for config" {
-        Mock Get-Content { return $globalConfig} -ParameterFilter { $path -like "*$appData*"} 
-        Mock Get-Content { return $localConfig} -ParameterFilter {-not ($path -like "*$appData*")}
-
         $result = Get-VsoConfig
 
 
