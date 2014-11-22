@@ -23,6 +23,13 @@ Usage
 
 PsVso contains several cmdlets to automate some common operations. You can see details of each one through normal PowerShell docs. 
 
+
+- **Get-MyWorkItems** 
+      Gets the work items that are assigned to or created by you. Provides easy filter to filter by open vs finished items.
+      
+- **Open-WorkItems**
+      Opens work items in your web browser.
+      
 - **Push-ToVso**      
       Takes a local git repo, creates a corresponding repo in your VSO project, adds that repo as a remote origin and pushes your local repo to it.
 
