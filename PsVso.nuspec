@@ -11,6 +11,9 @@
     <projectUrl>https://github.com/mmanela/PsVso</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <releaseNotes>
+      * Added Get-MyWorkItems
+      * Added Open-WorkItems
+      * Made local config default
     </releaseNotes>
   </metadata>
   <files>

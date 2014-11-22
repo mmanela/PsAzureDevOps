@@ -56,7 +56,7 @@ Task Pack-Nuget {
     }
 }
 
-Task Push-Chocolatey -depends Set-Version {
+Task Push-Chocolatey {
     exec { chocolatey push $packageDir\PsVso.$version.nupkg }
 }
 
