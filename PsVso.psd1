@@ -32,6 +32,7 @@ FunctionsToExport = @(
     'Set-VsoConfig',
     'Get-VsoConfig',    
     'Get-MyWorkItems',
+    'Open-WorkItems',
 
     'getWorkItemsFromQuery',
     'getRepos',

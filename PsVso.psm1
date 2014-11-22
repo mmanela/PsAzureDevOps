@@ -13,5 +13,5 @@ ForEach-Object { . $_.ProviderPath }
 
 Update-FormatData -PrependPath "$moduleRoot\WorkItem.Format.ps1xml"
 
-Export-ModuleMember Push-ToVso, Submit-PullRequest, Get-BuildStatus, Get-VsoConfig, Set-VsoConfig, Get-MyWorkItems,
+Export-ModuleMember Push-ToVso, Submit-PullRequest, Get-BuildStatus, Get-VsoConfig, Set-VsoConfig, Get-MyWorkItems, Open-WorkItems,
                     getUrl, postUrl, getProjects, getRepos, getProjectId, getIdentityId, getRepoId,getWorkItemsFromQuery

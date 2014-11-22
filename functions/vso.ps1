@@ -11,6 +11,7 @@ $script:pullRequestUrl = "https://{0}.visualstudio.com/defaultcollection/_apis/g
 $script:buildsUrl =      "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
 $script:runQueryUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
 $script:getWorkItemsUrl ="https://{0}.visualstudio.com/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
+$script:openWorkItemUrl= "https://{0}.visualstudio.com/defaultcollection/_workitems/edit/{1}"
 
 # Temp overrides to run against a local TFS server
 if($false) {
@@ -21,6 +22,7 @@ if($false) {
     $script:buildsUrl =      "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
     $script:runQueryUrl =    "http://{0}:8080/tfs/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
     $script:getWorkItemsUrl= "http://{0}:8080/tfs/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
+    $script:openWorkItemUrl= "http://{0}:8080/tfs/defaultcollection/_workitems/edit/{1}"
 }
 
 $script:stateFilterQueryPart = "AND ([System.State] NOT IN ({0}))"
@@ -33,6 +35,12 @@ $script:getMyWorkItemsQuery  = "SELECT [System.Id]
                                ORDER BY [{2}] DESC,[System.Id] DESC"
 
 
+
+function openWorkItemInBrowser($account, $workItemId) {
+    $webWorkItemUrl = [System.String]::Format($script:openWorkItemUrl, $account, $workItemId)
+
+    Start-Process $webWorkItemUrl
+}
 
 function getWorkItemsFromQuery($account, $project, $query, $take) {
     
