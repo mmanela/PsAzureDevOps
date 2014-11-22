@@ -21,10 +21,10 @@ The value to set the property.
 .PARAMETER Local
 Flag indicates you want to set value in a local config file.
 The file will be created in the current directory if it doesn't exist.
+This is the default.
 
 .PARAMETER Global
 Flag indicates you want to set value in the global config file.
-This is the default
 
 .Example
 Set-VsoConfig -Name Project -Value MyProject
@@ -48,10 +48,10 @@ about_PsVso
         [string]$Value,
         [Parameter(Mandatory = $false)]
         [switch]
-        $Local,
+        $Local = $true,
         [Parameter(Mandatory = $false)]
         [switch]
-        $Global = $true
+        $Global
 
     )
 
