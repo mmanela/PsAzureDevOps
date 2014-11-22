@@ -17,7 +17,6 @@ Describe "Get-VsoConfig" {
 
     Context "When asking for just local config" {
         $result = Get-VsoConfig -Local
-        Write-Host $result
 
         It "returns all local values"{
             $result.count | Should be 2

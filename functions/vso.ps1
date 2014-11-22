@@ -9,6 +9,8 @@ $script:gitReposUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_ap
 $script:identityUrl =    "https://{0}.visualstudio.com/defaultcollection/_api/_identity/CheckName?name={1}"
 $script:pullRequestUrl = "https://{0}.visualstudio.com/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
 $script:buildsUrl =      "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
+$script:runQueryUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
+$script:getWorkItemsUrl ="https://{0}.visualstudio.com/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
 
 # Temp overrides to run against a local TFS server
 if($false) {
@@ -17,9 +19,58 @@ if($false) {
     $script:identityUrl =    "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
     $script:pullRequestUrl = "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
     $script:buildsUrl =      "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
+    $script:runQueryUrl =    "http://{0}:8080/tfs/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
+    $script:getWorkItemsUrl= "http://{0}:8080/tfs/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
 }
 
+$script:stateFilterQueryPart = "AND ([System.State] NOT IN ({0}))"
+$script:getMyWorkItemsQuery  = "SELECT [System.Id]  
+                               FROM Issue 
+                               WHERE ([System.AssignedTo] = @me OR [System.CreatedBy] = @me) 
+                                     AND ([System.ChangedDate] > '{0}')  
+                                     {1}
+                                     AND ([System.TeamProject] = @project)
+                               ORDER BY [{2}] DESC,[System.Id] DESC"
 
+
+
+function getWorkItemsFromQuery($account, $project, $query, $take) {
+    
+    $queryUrl = [System.String]::Format($script:runQueryUrl, $account, $project)
+
+    $payload = @{
+        "query" = $query
+    }
+
+    $queryResults = postUrl $queryUrl $payload
+
+    if(-not $queryResults) {
+        return $null
+    }
+    
+    # The ids of the workitems in sorted order
+    $resultIds = $queryResults.workItems.id | Select-Object -First $take
+
+    if($resultIds) {
+        $wiIds = $resultIds -join ","
+        $workItemsUrl = [System.String]::Format($script:getWorkItemsUrl, $account, $wiIds)
+        $workItemsResult = getUrl $workItemsUrl
+        
+        if($workItemsResult) {
+            $workItems = $workItemsResult.value
+
+            # We need to sort the results by the query results since
+            # work items rest call doesn't honor order
+            $workItemMap = @{}
+            $workItems | ForEach-Object { $workItemMap[$_.Id] = $_ }
+
+            $sortedWorkItems = $resultIds | ForEach-Object { $workItemMap[$_] }
+            return $sortedWorkItems
+
+        }
+    }
+
+}
 
 function getBuilds($account, $project, $definition) {
     
@@ -188,6 +239,7 @@ function getUrl($urlStr) {
 
 function processRestReponse($response) {
     $result = $response.Content.ReadAsStringAsync().Result
+
 
     try {
         if($result){
