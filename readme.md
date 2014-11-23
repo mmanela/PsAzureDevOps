@@ -25,7 +25,7 @@ PsVso contains several cmdlets to automate some common operations. You can see d
 
 
 - **Get-MyWorkItems** 
-      Gets the work items that are assigned to or created by you. Provides easy filter to filter by open vs finished items.
+      Gets the work items that are assigned to or created by you. Provides easy way to filter by open vs finished items.
       
 - **Open-WorkItems**
       Opens work items in your web browser.
