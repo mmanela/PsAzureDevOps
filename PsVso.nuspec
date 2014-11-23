@@ -5,7 +5,7 @@
     <version>$version$</version>
     <title>PsVso</title>
     <summary>PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.</summary>
-    <description>PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online. Some of the functions include Push-ToVso (quickly take a local git repo and host it in a VSO project), Sumit-PullRequest (submits a pull request), Get-BuildStatus (gets the status of the last completed build)</description>
+    <description>PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online. Some of the functions include Push-ToVso (quickly take a local git repo and host it in a VSO project), Submit-PullRequest (submits a pull request), Get-BuildStatus (gets the status of the last completed build) and Get-MyWorkItems (lists work items created by or assigned to you)</description>
     <tags>powershell vso tfs git</tags>
     <authors>Matthew Manela</authors>
     <projectUrl>https://github.com/mmanela/PsVso</projectUrl>
