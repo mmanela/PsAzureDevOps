@@ -2,7 +2,8 @@ param (
     [string]$Action="default",
     [switch]$Help,
     [string]$package,
-    [string]$testName
+    [string]$testName,
+    [string]$versionOverride
 )
 $here = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 if(-not $env:ChocolateyInstall -or -not (Test-Path "$env:ChocolateyInstall")){
