@@ -63,7 +63,7 @@ about_PsVso
     $configObject = @{}
     $configPath = ""
 
-    if($Local) {
+    if($Local -and -not $Global) {
         $configPath = getLocalConfigPath
         if(-not $configPath) {
             $configPath = Join-Path (Get-Location) $configFileName
