@@ -4,7 +4,7 @@
 RootModule = 'PsVso.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.2.8'
+ModuleVersion = '0.2.10'
 
 # ID used to uniquely identify this module
 GUID = '30f59c9a-b2b9-4300-b53a-d3f9e78c0cc0'
@@ -25,24 +25,7 @@ Description = 'PsVso provides a suite of PowerShell functions that help automate
 PowerShellVersion = '3.0'
 
 # Functions to export from this module
-FunctionsToExport = @( 
-    'Push-ToVso',
-    'Submit-PullRequest',
-    'Get-BuildStatus',
-    'Set-VsoConfig',
-    'Get-VsoConfig',    
-    'Get-MyWorkItems',
-    'Open-WorkItems',
-
-    'getWorkItemsFromQuery',
-    'getRepos',
-    'getProjectId',
-    'getProjects',
-    'getIdentityId',
-    'getRepoId',
-    'getUrl',
-    'postUrl'
-)
+FunctionsToExport = '*'
 
 
 RequiredAssemblies = @( 
@@ -53,15 +36,13 @@ RequiredAssemblies = @(
 
 
 # # Cmdlets to export from this module
-# CmdletsToExport = '*'
+ CmdletsToExport = '*'
 
 # Variables to export from this module
-VariablesToExport = @(
-    
-)
+VariablesToExport = '*'
 
 # # Aliases to export from this module
-# AliasesToExport = '*'
+AliasesToExport = '*'
 
 # List of all modules packaged with this module
 # ModuleList = @()

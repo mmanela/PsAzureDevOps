@@ -219,10 +219,10 @@ function postUrl($urlStr, $payload) {
     
     Write-Progress -Activity "Making REST Call" -Status "POST $urlStr"
     
-    Write-Host "POST $urlStr"
+    traceMessage "POST $urlStr"
 
     $payloadString = ConvertTo-Json $payload
-    Write-Host "payload: $payloadString"
+    traceMessage "payload: $payloadString"
 
     $content = New-Object System.Net.Http.StringContent($payloadString, [System.Text.Encoding]::UTF8, "application/json")
 
@@ -236,7 +236,7 @@ function postUrl($urlStr, $payload) {
 function getUrl($urlStr) {
     
     Write-Progress -Activity "Making REST Call" -Status "GET $urlStr"
-    Write-Host "GET $urlStr"
+    traceMessage "GET $urlStr"
     
 
     $httpClient = getHttpClient
@@ -286,3 +286,4 @@ function getHttpClient() {
 
     return $httpClient
 }
+
