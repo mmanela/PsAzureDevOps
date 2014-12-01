@@ -24,14 +24,17 @@ Description = 'PsVso provides a suite of PowerShell functions that help automate
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '3.0'
 
+# Minimum version of the .NET Framework required by this module
+DotNetFrameworkVersion = '4.5'
+
 # Functions to export from this module
 FunctionsToExport = '*'
-
 
 RequiredAssemblies = @( 
     "lib\VsoOM\Microsoft.VisualStudio.Services.Client.dll",
     "lib\VsoOM\Microsoft.VisualStudio.Services.WebApi.dll",
-    "lib\VsoOM\Microsoft.VisualStudio.Services.Common.dll"
+    "lib\VsoOM\Microsoft.VisualStudio.Services.Common.dll",
+    "System.Net.Http.dll"
 )
 
 
