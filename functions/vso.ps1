@@ -13,8 +13,8 @@ $script:runQueryUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_ap
 $script:getWorkItemsUrl ="https://{0}.visualstudio.com/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
 $script:openWorkItemUrl= "https://{0}.visualstudio.com/defaultcollection/_workitems/edit/{1}"
 
-# Temp overrides to run against a local TFS server
-if($false) {
+# Override urls to run against a local TFS server
+if($PsVso.OnPremiseMode) {
     $script:projectsUrl =    "http://{0}:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
     $script:gitReposUrl =    "http://{0}:8080/tfs/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
     $script:identityUrl =    "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
@@ -26,13 +26,14 @@ if($false) {
 }
 
 $script:stateFilterQueryPart = "AND ([System.State] NOT IN ({0}))"
+$script:identityFilterQueryPart = " [{0}] = @me "
 $script:getMyWorkItemsQuery  = "SELECT [System.Id]  
                                FROM Issue 
-                               WHERE ([System.AssignedTo] = @me OR [System.CreatedBy] = @me) 
+                               WHERE ([System.TeamProject] = @project)
                                      AND ([System.ChangedDate] > '{0}')  
-                                     {1}
-                                     AND ([System.TeamProject] = @project)
-                               ORDER BY [{2}] DESC,[System.Id] DESC"
+                                     {1} 
+                                     AND ({2}) 
+                               ORDER BY [{3}] DESC,[System.Id] DESC"
 
 
 

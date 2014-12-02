@@ -7,6 +7,7 @@ $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 if(!$Global:PsVso) { 
     $Global:PsVso = @{} 
     $PsVso.SuppressLogging=$true
+    $PsVso.OnPremiseMode=$false
 }
 
 "$moduleRoot\functions\*.ps1", "$moduleRoot\cmdlets\*.ps1" |

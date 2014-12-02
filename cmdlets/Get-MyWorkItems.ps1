@@ -26,6 +26,18 @@ The field to order by. By default this is System.ChangedDate
 .PARAMETER Take
 The number of work items to show. Defaults to the 200. Max is 200.
 
+.PARAMETER AssignedToMe
+Show work items that are assigned to the current user. 
+By default Get-MyWorkItems shows both work items created by you and assigned to you. 
+However, if you specify -AssignedToMe and don't specify -CreatedByMe then you
+will only see items assigned to you
+
+.PARAMETER CreatedByMe
+Show work items that are created by the current user. 
+By default Get-MyWorkItems shows both work items created by you and assigned to you. 
+However, if you specify -CreatedByMe and don't specify -AssignedToMe then you
+will only see items created by you
+
 .PARAMETER IncludeAllStates
 By default Get-MyWorkItems trys to filter out "finished" items. This property
 prevents this behavior.
@@ -55,6 +67,10 @@ about_PsVso
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
+        [switch]$AssignedToMe,
+        [Parameter(Mandatory = $false)]
+        [switch]$CreatedByMe,
+        [Parameter(Mandatory = $false)]
         [string]$OrderBy,
         [Parameter(Mandatory = $false)]
         [int]$Take = 200,
@@ -73,6 +89,23 @@ about_PsVso
 
     $fromDate = (Get-Date).AddDays(-30).ToShortDateString()
 
+
+    $identityFilterFields = @()
+    # If the user didn't set either filter then assume both are true
+    if(-not $CreatedByMe -and -not $AssignedToMe) {
+        $CreatedByMe = $true
+        $AssignedToMe = $true
+    }
+
+    if($CreatedByMe) {
+        $identityFilterFields += [System.String]::Format($script:identityFilterQueryPart, "System.CreatedBy")
+    }
+    if($AssignedToMe) {
+        $identityFilterFields += [System.String]::Format($script:identityFilterQueryPart, "System.AssignedTo")
+    }
+
+    $identityFilterString = $identityFilterFields -join " OR "
+
     if(-not $OrderBy) {
         $OrderBy = "System.ChangedDate"
     }
@@ -87,7 +120,7 @@ about_PsVso
         $stateFilterPart = [System.String]::Format($script:stateFilterQueryPart, $excludedStatesString)         
     }
 
-    $query = [System.String]::Format($script:getMyWorkItemsQuery, $fromDate, $stateFilterPart, $OrderBy)
+    $query = [System.String]::Format($script:getMyWorkItemsQuery, $fromDate, $stateFilterPart, $identityFilterString, $OrderBy)
 
     $workItems = getWorkItemsFromQuery $accountName $projectName $query $take
 
