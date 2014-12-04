@@ -44,7 +44,6 @@ about_PsVso
         $Global   
     )
 
-
     # Gets the global config from the known location
     $globalConfig = readConfigFile $script:globalConfigPath
 

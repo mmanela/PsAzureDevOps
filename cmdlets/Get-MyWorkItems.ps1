@@ -14,11 +14,9 @@ Items are considered "finished" if State is any of the following values
   Done
   Removed
   Resolved
-  Removed
   Closed
   Cut
-  Closed
-
+  Completed
 
 .PARAMETER OrderBy
 The field to order by. By default this is System.ChangedDate
@@ -115,7 +113,7 @@ about_PsVso
         $stateFilterPart = ""
     }
     else {
-        $excludedStates = @("Done", "Removed", "Closed", "Resolved")
+        $excludedStates = @("Done", "Removed", "Closed", "Resolved", "Completed", "Cut")
         $excludedStatesString = ($excludedStates | ForEach-Object { "`"$_`""}) -join ","
         $stateFilterPart = [System.String]::Format($script:stateFilterQueryPart, $excludedStatesString)         
     }

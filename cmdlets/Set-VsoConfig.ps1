@@ -86,6 +86,6 @@ about_PsVso
     Set-Content -Path $configPath -Value $configJson
 
 
-    Write-Host "Wrote to config file at $configPath"
+    traceMessage "Wrote to config file at $configPath"
 
 }

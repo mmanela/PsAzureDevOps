@@ -1,8 +1,8 @@
 # Functions and variables used for the config related operations
 
-
 $script:configFileName = "PsVso.json"
 $script:globalConfigPath = Join-Path ([System.Environment]::ExpandEnvironmentVariables("%userprofile%")) $configFileName
+
 
 $script:cached_config = @{}
 $script:config_projectKey           = "project"
@@ -70,11 +70,15 @@ function getLocalConfigPath {
 }
 
 function readConfigFile($filePath) {
+
     $configHash = @{}
     if($filePath -and (Test-Path $filePath)) {
         $content = Get-Content $filePath -Raw
-        $jsonObject = ConvertFrom-Json $content
-        $jsonObject.psobject.Properties | ForEach-Object { $configHash[$_.Name] = $_.Value }
+
+        if($content) {
+            $jsonObject = ConvertFrom-Json $content
+            $jsonObject.psobject.Properties | ForEach-Object { $configHash[$_.Name] = $_.Value }
+        }
     }
 
     return $configHash
