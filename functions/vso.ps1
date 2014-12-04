@@ -44,7 +44,7 @@ function openWorkItemInBrowser($account, $workItemId) {
 }
 
 function getWorkItemsFromQuery($account, $project, $query, $take) {
-    
+
     $queryUrl = [System.String]::Format($script:runQueryUrl, $account, $project)
 
     $payload = @{
@@ -56,7 +56,6 @@ function getWorkItemsFromQuery($account, $project, $query, $take) {
     if(-not $queryResults) {
         return $null
     }
-    
     # The ids of the workitems in sorted order
     $resultIds = $queryResults.workItems.id | Select-Object -First $take
 
@@ -64,7 +63,7 @@ function getWorkItemsFromQuery($account, $project, $query, $take) {
         $wiIds = $resultIds -join ","
         $workItemsUrl = [System.String]::Format($script:getWorkItemsUrl, $account, $wiIds)
         $workItemsResult = getUrl $workItemsUrl
-        
+         
         if($workItemsResult) {
             $workItems = $workItemsResult.value
 
@@ -247,6 +246,7 @@ function getUrl($urlStr) {
 }
 
 function processRestReponse($response) {
+    
     $result = $response.Content.ReadAsStringAsync().Result
 
 

@@ -122,7 +122,6 @@ about_PsVso
 
     $workItems = getWorkItemsFromQuery $accountName $projectName $query $take
 
-    $global:__res = $workItems
     # Transform some properties to make them easily formatted
     $workItems = $workItems.fields | 
     ForEach-Object { 
