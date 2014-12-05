@@ -48,10 +48,12 @@ about_PsVso
         [string]$Account
     )
 
-    Process {
+    Begin {
         refreshCachedConfig
+    }
 
-
+    Process {
+        
         if($PsCmdlet.ParameterSetName -eq "WorkItem"){
             $WorkItemIds = $WorkItems.Id
         }
