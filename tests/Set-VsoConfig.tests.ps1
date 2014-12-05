@@ -1,5 +1,10 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
+if(!$Global:PsVso) { 
+    $Global:PsVso = @{} 
+    $PsVso.SuppressLogging=$true
+}
+
 "$here\..\functions\*.ps1", "$here\..\cmdlets\*.ps1" |
 Resolve-Path |
 Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
@@ -10,6 +15,28 @@ Describe "Set-VsoConfig" {
    
     $script:globalConfigPath = Join-Path "TestDrive:\global\config" $script:configFileName
     New-Item  $globalConfigPath -ItemType File -Force -ErrorAction SilentlyContinue
+
+    Context "When setting config values" {
+        $localConfigFolder = "TestDrive:\localConfig0"
+        New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
+        Push-Location $localConfigFolder
+
+        Set-VsoConfig Project MyProject
+        Set-VsoConfig Account MyAccount
+
+
+        $localConfig = Get-VsoConfig -Local
+
+        It "sets values to local config file by default"{
+
+            $localConfig.Count | Should be 2
+            $localConfig.Project | Should be "MyProject"
+            $localConfig.Account | Should be "MyAccount"
+        }
+
+
+        Pop-Location
+    }
 
     Context "When setting local config values" {
 
