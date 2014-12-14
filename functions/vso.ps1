@@ -4,25 +4,27 @@
 $script:cached_HttpClient = $null
 $script:cached_accountProjectMap = @{}
 
-$script:projectsUrl =    "https://{0}.visualstudio.com/defaultcollection/_apis/projects?api-version=1.0"
-$script:gitReposUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
-$script:identityUrl =    "https://{0}.visualstudio.com/defaultcollection/_api/_identity/CheckName?name={1}"
-$script:pullRequestUrl = "https://{0}.visualstudio.com/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
-$script:buildsUrl =      "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
-$script:runQueryUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
-$script:getWorkItemsUrl ="https://{0}.visualstudio.com/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
-$script:openWorkItemUrl= "https://{0}.visualstudio.com/defaultcollection/_workitems/edit/{1}"
+$script:projectsUrl =        "https://{0}.visualstudio.com/defaultcollection/_apis/projects?api-version=1.0"
+$script:gitReposUrl =        "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
+$script:identityUrl =        "https://{0}.visualstudio.com/defaultcollection/_api/_identity/CheckName?name={1}"
+$script:pullRequestUrl =     "https://{0}.visualstudio.com/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
+$script:openPullRequestUrl = "https://{0}.visualstudio.com/defaultcollection/{1}/_git/{2}/pullrequest/{3}"
+$script:buildsUrl =          "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
+$script:runQueryUrl =        "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
+$script:getWorkItemsUrl =    "https://{0}.visualstudio.com/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
+$script:openWorkItemUrl=     "https://{0}.visualstudio.com/defaultcollection/_workitems/edit/{1}"
 
 # Override urls to run against a local TFS server
 if($PsVso.OnPremiseMode) {
-    $script:projectsUrl =    "http://{0}:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
-    $script:gitReposUrl =    "http://{0}:8080/tfs/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
-    $script:identityUrl =    "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
-    $script:pullRequestUrl = "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
-    $script:buildsUrl =      "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
-    $script:runQueryUrl =    "http://{0}:8080/tfs/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
-    $script:getWorkItemsUrl= "http://{0}:8080/tfs/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
-    $script:openWorkItemUrl= "http://{0}:8080/tfs/defaultcollection/_workitems/edit/{1}"
+    $script:projectsUrl =        "http://{0}:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
+    $script:gitReposUrl =        "http://{0}:8080/tfs/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
+    $script:identityUrl =        "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
+    $script:pullRequestUrl =     "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
+    $script:openPullRequestUrl = "http://{0}:8080/tfs/defaultcollection/{1}/_git/{2}/pullrequest/{3}"
+    $script:buildsUrl =          "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definition={2}&`$top=1&status=Failed,PartiallySucceeded,Succeeded&api-version=1.0"
+    $script:runQueryUrl =        "http://{0}:8080/tfs/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
+    $script:getWorkItemsUrl=     "http://{0}:8080/tfs/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
+    $script:openWorkItemUrl=     "http://{0}:8080/tfs/defaultcollection/_workitems/edit/{1}"
 }
 
 $script:stateFilterQueryPart = "AND ([System.State] NOT IN ({0}))"

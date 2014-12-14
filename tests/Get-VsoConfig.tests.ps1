@@ -12,6 +12,7 @@ Describe "Get-VsoConfig" {
 
     $appData = [System.Environment]::ExpandEnvironmentVariables("%userprofile%")
 
+    Mock Test-Path { return $true }
     Mock Get-Content { return $globalConfig } -ParameterFilter { $path -like "*$appData*"} 
     Mock Get-Content { return $localConfig } -ParameterFilter { -not ($path -like "*$appData*") } 
 

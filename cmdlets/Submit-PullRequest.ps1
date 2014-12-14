@@ -6,6 +6,7 @@ Submits a pull request to Visual Studio Online
 
 .DESCRIPTION
 Calling Submit-PullRequest will create a pull request between the configured branches in your Visual Studio Online project.
+If succesfull will launch the pull request in a browser.
 
 
 .PARAMETER Title
@@ -15,10 +16,10 @@ The title of the pull request.
 The description of the pull request.
 
 .PARAMETER SourceBranch
-The branch you want to merge from.
+The branch you want to merge from. Can be inherited from a config file.
 
 .PARAMETER TargetBranch
-The branch you want to merge to.
+The branch you want to merge to. Can be inherited from a config file.
 
 .PARAMETER Reviewers
 The list of people to add to the PR. This should be their display name or email address.
@@ -46,9 +47,9 @@ about_PsVso
         [string]$Title,
         [Parameter(Mandatory = $false)]
         [string]$Description,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string]$SourceBranch,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string]$TargetBranch,
         [Parameter(Mandatory = $false)]
         [string[]]$Reviewers,
@@ -62,9 +63,11 @@ about_PsVso
 
     refreshCachedConfig
 
-    $accountName = getFromValueOrConfig $Account $script:config_accountKey
-    $projectName = getFromValueOrConfig $Project $script:config_projectKey
-    $repoName    = getFromValueOrConfig $Repository $script:config_repoKey
+    $accountName         = getFromValueOrConfig $Account $script:config_accountKey
+    $projectName         = getFromValueOrConfig $Project $script:config_projectKey
+    $repoName            = getFromValueOrConfig $Repository $script:config_repoKey
+    $sourceBranchName    = getFromValueOrConfig $SourceBranch $script:config_sourceBranch
+    $targetBranchName    = getFromValueOrConfig $TargetBranch $script:config_targetBranch
 
     $reviewerIds = @()
     if($Reviewers) {
@@ -72,17 +75,17 @@ about_PsVso
     }
 
     $refPrefix = "refs/heads/"
-    if(-not $SourceBranch.ToLower().StartsWith("$refPrefix")) {
-        $SourceBranch = $refPrefix + $SourceBranch
+    if(-not $sourceBranchName.ToLower().StartsWith("$refPrefix")) {
+        $sourceBranchName = $refPrefix + $sourceBranchName
     }   
 
-    if(-not $TargetBranch.ToLower().StartsWith("$refPrefix")) {
-        $TargetBranch = $refPrefix + $TargetBranch
+    if(-not $targetBranchName.ToLower().StartsWith("$refPrefix")) {
+        $targetBranchName = $refPrefix + $targetBranchName
     }
 
     $payload = @{
-        "sourceRefName" = $SourceBranch
-        "targetRefName" = $TargetBranch
+        "sourceRefName" = $sourceBranchName
+        "targetRefName" = $targetBranchName
         "title"= $Title
         "description" = $Description
         "reviewers" = $reviewerIds | ForEach-Object { @{ "id" = $_ } }
@@ -90,12 +93,14 @@ about_PsVso
 
     $repoId = getRepoId $accountName $projectName $repoName
 
-
+    
     $url = [System.String]::Format($script:pullRequestUrl, $accountName, $repoId)
     $repoResults = postUrl $url $payload
 
-    if($repoResults) {
-         Write-Host "Pull request created at $($repoResults.url)"
+     if($repoResults) {
+        $webUrl = [System.String]::Format($script:openPullRequestUrl, $accountName, $projectName, $repoName, $repoId)
+        Write-Host "Pull request created at $webUrl"
+        Start-Process $webUrl
     }
 
 }

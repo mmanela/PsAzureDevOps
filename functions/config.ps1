@@ -9,7 +9,8 @@ $script:config_projectKey           = "project"
 $script:config_accountKey           = "account"
 $script:config_repoKey              = "repository"
 $script:config_buildDefinitionKey   = "builddefinition"
-
+$script:config_sourceBranch         = "sourceBranch"
+$script:config_targetBranch         = "targetBranch"
 
 function refreshCachedConfig() {
     $script:cached_config = Get-VsoConfig

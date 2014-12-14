@@ -15,8 +15,9 @@ This module requires PowersShell version 3 or greater. No explicit dependency is
     <projectUrl>https://github.com/mmanela/PsVso</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <releaseNotes>
-      * Add AssignedToMe and CreatedByMe filters to Get-MyWorkItems
-      * Ensure the System.Http.Net dll is loaded
+      * Fix formatting on work item output
+      * Open pull request after creating one
+      * Allow SourceBranch and TargetBranch to be inherited from config
     </releaseNotes>
   </metadata>
   <files>

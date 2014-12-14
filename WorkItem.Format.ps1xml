@@ -11,17 +11,17 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>Id</Label>
-            <Width>5</Width>
+            <Width>7</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>WorkItemType</Label>
+            <Label>Type</Label>
             <Width>10</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Title</Label>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>AssignedTo</Label>
+            <Label>Assigned To</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
