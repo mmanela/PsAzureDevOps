@@ -282,7 +282,7 @@ function getHttpClient() {
     $requestSettings = New-Object Microsoft.VisualStudio.Services.Common.VssHttpRequestSettings
     $messageHandler = New-Object Microsoft.VisualStudio.Services.Common.VssHttpMessageHandler($credentials, $requestSettings)
     $httpClient = New-Object System.Net.Http.HttpClient($messageHandler)
-    $httpClient.Timeout = [System.TimeSpan]::FromMinutes(30)
+    $httpClient.Timeout = [System.TimeSpan]::FromSeconds($PsVso.TimeoutInSeconds)
     $httpClient.DefaultRequestHeaders.Add("User-Agent", "PsVso/1.0");
     
     $script:cached_HttpClient = $httpClient

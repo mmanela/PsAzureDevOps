@@ -2,7 +2,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 if(!$Global:PsVso) { 
     $Global:PsVso = @{} 
-    $PsVso.SuppressLogging=$true
+    $PsVso.EnableLogging=$true
 }
 
 "$here\..\functions\*.ps1", "$here\..\cmdlets\*.ps1" |

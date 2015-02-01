@@ -3,11 +3,11 @@
 $ErrorActionPreference = "Stop"
 
 $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
-
-if(!$Global:PsVso) { 
+if(-not $Global:PsVso) { 
     $Global:PsVso = @{} 
-    $PsVso.SuppressLogging=$true
+    $PsVso.EnableLogging=$false
     $PsVso.OnPremiseMode=$false
+    $PsVso.TimeoutInSeconds=30
 }
 
 "$moduleRoot\functions\*.ps1", "$moduleRoot\cmdlets\*.ps1" |
