@@ -5,7 +5,7 @@
     <version>$version$</version>
     <title>PsVso</title>
     <summary>PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.</summary>
-    <description>PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online. Some of the functions include Push-ToVso (quickly take a local git repo and host it in a VSO project), Submit-PullRequest (submits a pull request), Get-BuildStatus (gets the status of the last completed build) and Get-MyWorkItems (lists work items created by or assigned to you).
+    <description>PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online. Some of the functions include Push-ToVso (quickly take a local git repo and host it in a VSO project), Submit-PullRequest (submits a pull request), Get-XamlBuildStatus (gets the status of the last completed  XAML build) and Get-MyWorkItems (lists work items created by or assigned to you).
 
 This module requires PowersShell version 3 or greater. No explicit dependency is taken to not force a user to upgrade unknowingly.
     </description>
