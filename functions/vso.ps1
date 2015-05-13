@@ -255,6 +255,9 @@ function processRestReponse($response) {
     try {
         if($result){
             $obj = ConvertFrom-Json $result
+
+
+            traceMessage "REST RESPONSE: $obj"
         }
     }
     catch {

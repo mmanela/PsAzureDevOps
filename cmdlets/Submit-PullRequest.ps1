@@ -95,10 +95,10 @@ about_PsVso
 
     
     $url = [System.String]::Format($script:pullRequestUrl, $accountName, $repoId)
-    $repoResults = postUrl $url $payload
+    $prResults = postUrl $url $payload
 
-     if($repoResults) {
-        $webUrl = [System.String]::Format($script:openPullRequestUrl, $accountName, $projectName, $repoName, $repoId)
+     if($prResults) {
+        $webUrl = [System.String]::Format($script:openPullRequestUrl, $accountName, $projectName, $repoName, $prResults.pullRequestId)
         Write-Host "Pull request created at $webUrl"
         Start-Process $webUrl
     }
