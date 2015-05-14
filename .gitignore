@@ -3,3 +3,5 @@ _package/
 Test.xml
 vendor/packages/
 PsVso.json
+bin/
+obj/

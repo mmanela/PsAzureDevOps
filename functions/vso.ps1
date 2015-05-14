@@ -226,11 +226,8 @@ function postUrl($urlStr, $payload) {
     $payloadString = ConvertTo-Json $payload
     traceMessage "payload: $payloadString"
 
-    $content = New-Object System.Net.Http.StringContent($payloadString, [System.Text.Encoding]::UTF8, "application/json")
-
     $httpClient = getHttpClient
-    $url = New-Object System.Uri($urlStr)
-    $response = $httpClient.PostAsync($urlStr, $content).Result
+    $response = $httpClient.PostUrl($urlStr, $payloadString)
     
     return processRestReponse $response
 }
@@ -242,15 +239,13 @@ function getUrl($urlStr) {
     
 
     $httpClient = getHttpClient
-    $url = New-Object System.Uri($urlStr)
-    $response = $httpClient.GetAsync($urlStr).Result
+    $response = $httpClient.GetUrl($urlStr)
     return processRestReponse $response
 }
 
 function processRestReponse($response) {
-    
-    $result = $response.Content.ReadAsStringAsync().Result
 
+    $result = $response.Content.ReadAsStringAsync().Result
 
     try {
         if($result){
@@ -274,22 +269,16 @@ function processRestReponse($response) {
 }
 
 
+
+
 function getHttpClient() {
 
     if($script:cached_HttpClient){
         return $script:cached_HttpClient;
     }
 
-    $credentials = New-Object Microsoft.VisualStudio.Services.Client.VssClientCredentials
-    $credentials.Storage = New-Object Microsoft.VisualStudio.Services.Client.VssClientCredentialStorage("VssApp", "VisualStudio")
-    $requestSettings = New-Object Microsoft.VisualStudio.Services.Common.VssHttpRequestSettings
-    $messageHandler = New-Object Microsoft.VisualStudio.Services.Common.VssHttpMessageHandler($credentials, $requestSettings)
-    $httpClient = New-Object System.Net.Http.HttpClient($messageHandler)
-    $httpClient.Timeout = [System.TimeSpan]::FromSeconds($PsVso.TimeoutInSeconds)
-    $httpClient.DefaultRequestHeaders.Add("User-Agent", "PsVso/1.0");
-    
-    $script:cached_HttpClient = $httpClient
+    $script:cached_HttpClient = new-object VsoRestProxy.VsoProxy("PsVso/1.0")
 
-    return $httpClient
+    return $script:cached_HttpClient
 }
 

@@ -5,8 +5,8 @@ $ErrorActionPreference = "Stop"
 $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 if(-not $Global:PsVso) { 
     $Global:PsVso = @{} 
-    $PsVso.EnableLogging=$true
-    $PsVso.OnPremiseMode=$true
+    $PsVso.EnableLogging=$false
+    $PsVso.OnPremiseMode=$false
     $PsVso.TimeoutInSeconds=30
 }
 

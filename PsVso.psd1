@@ -4,7 +4,7 @@
 RootModule = 'PsVso.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.3.2'
+ModuleVersion = '0.3.5'
 
 # ID used to uniquely identify this module
 GUID = '30f59c9a-b2b9-4300-b53a-d3f9e78c0cc0'
@@ -34,7 +34,8 @@ RequiredAssemblies = @(
     "lib\VsoOM\Microsoft.VisualStudio.Services.Client.dll",
     "lib\VsoOM\Microsoft.VisualStudio.Services.WebApi.dll",
     "lib\VsoOM\Microsoft.VisualStudio.Services.Common.dll",
-    "System.Net.Http.dll"
+    "System.Net.Http.dll",
+    "lib\VsoRestProxy\VsoRestProxy.dll"
 )
 
 
