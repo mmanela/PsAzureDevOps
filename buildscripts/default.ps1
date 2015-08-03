@@ -19,7 +19,8 @@ properties {
     if($versionOverride) {
         $version = $versionOverride
     }
-    $nugetExe = "$env:ChocolateyInstall\ChocolateyInstall\nuget"
+
+    $nugetExe = "$env:ChocolateyInstall\bin\nuget.exe"
 }
 
 

@@ -24,10 +24,15 @@ function Check-Chocolatey {
         [switch] $Force
     )
     if(-not $env:ChocolateyInstall -or -not (Test-Path "$env:ChocolateyInstall")){
-        $message = "Chocolatey is going to be downloaded and installed on your machine. If you do not have the .NET Framework Version 4, that will also be downloaded and installed."
+        $message = "Chocolatey is going to be downloaded and installed on your machine. If you do not have the .NET Framework Version 4 or greater, that will also be downloaded and installed."
         Write-Host $message
         if($Force -OR (Confirm-Install)){
-            $env:ChocolateyInstall = "$env:systemdrive\chocolatey"
+            $exitCode = Enable-Net40
+            if($exitCode -ne 0) {
+                Write-Warning ".net install returned $exitCode. You likely need to reboot your computer before proceeding with the install."
+                return $false
+            }
+            $env:ChocolateyInstall = "$env:programdata\chocolatey"
             New-Item $env:ChocolateyInstall -Force -type directory | Out-Null
             $url="http://chocolatey.org/api/v2/package/chocolatey/"
             $wc=new-object net.webclient
@@ -35,8 +40,7 @@ function Check-Chocolatey {
             $wp.UseDefaultCredentials=$true
             $wc.Proxy=$wp
             iex ($wc.DownloadString("http://chocolatey.org/install.ps1"))
-            Import-Module $env:ChocolateyInstall\chocolateyinstall\helpers\chocolateyInstaller.psm1
-            $env:path="$env:path;$env:systemdrive\chocolatey\bin"
+            $env:path="$env:path;$env:ChocolateyInstall\bin"
         }
         else{
             return $false
