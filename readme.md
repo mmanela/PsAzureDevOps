@@ -39,9 +39,6 @@ PsVso contains several cmdlets to automate some common operations. You can see d
 - **Get-BuildStatus**
     Gets the status of the last build
 
-- **Get-XamlBuildStatus**
-    Gets the status of the last xaml build
-
 - **Set-VsoConfig**
     Sets a config value for use in other PsVso functions
 

@@ -32,7 +32,10 @@ about_PsVso
         [Parameter(Mandatory = $false)]
         [string]$Account,
         [Parameter(Mandatory = $false)]
-        [string]$Project
+        [string]$Project,
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('build','xaml')]
+        [string]$Type = "build"
     )
 
     refreshCachedConfig
@@ -41,10 +44,10 @@ about_PsVso
     $accountName    = getFromValueOrConfig $Account $script:config_accountKey
     $projectName    = getFromValueOrConfig $Project $script:config_projectKey
 
-    $buildResults = getBuilds $accountName $projectName $definitionName "build"
+    $buildResults = getBuilds $accountName $projectName $definitionName $Type
 
     if($buildResults) {
-        if($buildResults[0].status -eq "succeeded") {
+        if(($buildResults[0].status -eq "succeeded") -or ($buildResults[0].status -eq "completed")) {
             Write-Host "Build $($buildResults[0].buildNumber) SUCCEEDED" -ForegroundColor Green
         }
         elseif($buildResults[0].status -eq "failed") {
