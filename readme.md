@@ -36,6 +36,9 @@ PsVso contains several cmdlets to automate some common operations. You can see d
 - **Submit-PullRequest**
       Submits a pull request
 
+- **Get-BuildStatus**
+    Gets the status of the last build
+
 - **Get-XamlBuildStatus**
     Gets the status of the last xaml build
 

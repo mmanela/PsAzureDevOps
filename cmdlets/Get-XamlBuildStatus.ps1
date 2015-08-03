@@ -1,11 +1,11 @@
 
-function Get-BuildStatus {
+function Get-XamlBuildStatus {
 <#
 .SYNOPSIS
-Gets the current status of the build
+Gets the current status of the XAML build
 
 .DESCRIPTION
-Get-BuildStatus will query your VSO project to see the status of the last build. This is usefull to make sure you don't push 
+Get-XamlBuildStatus will query your VSO project to see the status of the last build. This is usefull to make sure you don't push 
 changes when the build is not green
 
 .PARAMETER BuildDefinition
@@ -19,7 +19,7 @@ If your VSO url is hello.visualstudio.com then this value should be hello.
 The project name to use. Can be inherited from a config file.
 
 .Example
-Get-BuildStatus -BuildDefinition myBuildDef -Account myAccount -Project myProject
+Get-XamlBuildStatus -BuildDefinition myBuildDef -Account myAccount -Project myProject
 
 .LINK
 about_PsVso
@@ -41,7 +41,7 @@ about_PsVso
     $accountName    = getFromValueOrConfig $Account $script:config_accountKey
     $projectName    = getFromValueOrConfig $Project $script:config_projectKey
 
-    $buildResults = getBuilds $accountName $projectName $definitionName "build"
+    $buildResults = getBuilds $accountName $projectName $definitionName  "xaml"
 
     if($buildResults) {
         if($buildResults[0].status -eq "succeeded") {
