@@ -88,7 +88,7 @@ about_PsVso
         "targetRefName" = $targetBranchName
         "title"= $Title
         "description" = $Description
-        "reviewers" = $reviewerIds | ForEach-Object { @{ "id" = $_ } }
+        "reviewers" = @($reviewerIds | ForEach-Object { @{ "id" = $_ } })
     }
 
     $repoId = getRepoId $accountName $projectName $repoName
