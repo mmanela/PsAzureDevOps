@@ -9,19 +9,32 @@ Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
 Describe "Get-VsoConfig" {
-    $globalConfig = '{"project": "globalProject", "account":"globalAccount"}'
-    $localConfig = '{"project": "localProject", "repository":"localRepository"}'
 
-    $appData = [System.Environment]::ExpandEnvironmentVariables("%userprofile%")
+    BeforeAll {
+        $globalConfig = '{"project": "globalProject", "account":"globalAccount"}'
+        $localConfig = '{"project": "localProject", "repository":"localRepository"}'
 
-
-    Mock Test-Path { return $true }
-    Mock Get-Content { return $globalConfig } -ParameterFilter { $path -like "*$appData*"}
-    Mock Get-Content { return $localConfig } -ParameterFilter { -not ($path -like "*$appData*") } 
-
+        $globalConfigFolder = "TestDrive:\global\config"
+        $script:globalConfigPath = Join-Path $globalConfigFolder $script:configFileName
+        New-Item $globalConfigFolder -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
+        New-Item $globalConfigPath -ItemType File -Force -ErrorAction SilentlyContinue | Out-Null
+        Set-Content -Path $globalConfigPath -Value $globalConfig -Force
+    
+        $localConfigFolder = "TestDrive:\local\config"
+        $localConfigPath = Join-Path $localConfigFolder $script:configFileName
+        New-Item $localConfigFolder -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
+        New-Item $localConfigPath -ItemType File -ErrorAction SilentlyContinue | Out-Null
+        Set-Content -Path $localConfigPath -Value $localConfig -Force
+        Push-Location $localConfigFolder
+    }
+    
+    AfterAll {
+        Pop-Location
+    }
+    
     Context "When asking for just local config" {
         $result = Get-VsoConfig -Local
-
+                
         It "returns all local values"{
             $result.count | Should be 2
         }

@@ -73,8 +73,8 @@ about_PsVso
         }
 
 
-    # Add type name
-    $workItems | ForEach-Object { $_.PSObject.TypeNames.Insert(0,'WorkItem') }
+    # Transform some properties to make them easily formatted
+    $workItems = formatWorkItems $workItems
 
     return $workItems
 }
