@@ -29,10 +29,11 @@ if($PsVso.OnPremiseMode) {
     $script:openWorkItemUrl=      "http://{0}:8080/tfs/defaultcollection/_workitems/edit/{1}"
 }
 
-$script:stateFilterQueryPart = "AND ([System.State] NOT IN ({0}))"
+$script:stateExcludeFilterQueryPart = "AND ([System.State] NOT IN ({0}))"
+$script:stateIncludeFilterQueryPart = "AND ([System.State] IN ({0}))"
 $script:identityFilterQueryPart = " [{0}] = @me "
 $script:getMyWorkItemsQuery  = "SELECT [System.Id]  
-                               FROM Issue 
+                               FROM WorkItems 
                                WHERE ([System.TeamProject] = @project)
                                      AND ([System.ChangedDate] > '{0}')  
                                      {1} 

@@ -1,4 +1,7 @@
+if(Get-Module PsVso){ Remove-Module PsVso }
+
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
+
 
 "$here\..\functions\*.ps1", "$here\..\cmdlets\*.ps1" |
 Resolve-Path |
@@ -6,14 +9,17 @@ Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
 
+Import-Module .\PsVso.psm1 -Global
+
 Describe "Get-VsoConfig" {
     $globalConfig = '{"project": "globalProject", "account":"globalAccount"}'
     $localConfig = '{"project": "localProject", "repository":"localRepository"}'
 
     $appData = [System.Environment]::ExpandEnvironmentVariables("%userprofile%")
 
+
     Mock Test-Path { return $true }
-    Mock Get-Content { return $globalConfig } -ParameterFilter { $path -like "*$appData*"} 
+    Mock Get-Content { return $globalConfig } -ParameterFilter { $path -like "*$appData*"}
     Mock Get-Content { return $localConfig } -ParameterFilter { -not ($path -like "*$appData*") } 
 
     Context "When asking for just local config" {
@@ -28,7 +34,6 @@ Describe "Get-VsoConfig" {
             $result.project | Should be "localProject"
         }
     }
-
 
     Context "When asking for just global config" {
         $result = Get-VsoConfig -Global

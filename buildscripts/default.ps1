@@ -31,14 +31,15 @@ Task Push-Public -depends Push-Chocolatey
 
 
 Task Test {
+    Import-Module pester
+    
     pushd "$baseDir"
-    $pesterDir = (dir $env:ChocolateyInstall\lib\Pester*)
-    if($pesterDir.length -gt 0) {$pesterDir = $pesterDir[-1]}
+        
     if($testName){
-        exec {."$pesterDir\tools\bin\Pester.bat" $baseDir/tests -testName $testName}
+        Invoke-Pester -Script $baseDir/tests -TestName $testName
     }
     else{
-        exec {."$pesterDir\tools\bin\Pester.bat" $baseDir/tests }
+        Invoke-Pester -Script $baseDir/tests
     }
     popd
 }

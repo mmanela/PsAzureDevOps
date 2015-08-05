@@ -40,6 +40,10 @@ will only see items created by you
 By default Get-MyWorkItems trys to filter out "finished" items. This property
 prevents this behavior.
 
+.PARAMETER IncludedStates
+By default Get-MyWorkItems trys to filter out "finished" items. This property
+prevents this behavior and lets you specify just the states you want.
+
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
 If your VSO url is hello.visualstudio.com then this value should be hello.
@@ -74,6 +78,8 @@ about_PsVso
         [int]$Take = 200,
         [Parameter(Mandatory = $false)]
         [switch]$IncludeAllStates,
+        [Parameter(Mandatory = $false)]
+        [string[]]$IncludedStates,
         [Parameter(Mandatory = $false)]
         [string]$Account,
         [Parameter(Mandatory = $false)]
@@ -112,15 +118,19 @@ about_PsVso
         $excludedStates = @()
         $stateFilterPart = ""
     }
+    elseif($IncludedStates) {
+        $excludedStatesString = ($IncludedStates | ForEach-Object { "`"$_`""}) -join ","
+        $stateFilterPart = [System.String]::Format($script:stateIncludeFilterQueryPart, $excludedStatesString)    
+    }
     else {
         $excludedStates = @("Done", "Removed", "Closed", "Resolved", "Completed", "Cut")
         $excludedStatesString = ($excludedStates | ForEach-Object { "`"$_`""}) -join ","
-        $stateFilterPart = [System.String]::Format($script:stateFilterQueryPart, $excludedStatesString)         
+        $stateFilterPart = [System.String]::Format($script:stateExcludeFilterQueryPart, $excludedStatesString)         
     }
 
     $query = [System.String]::Format($script:getMyWorkItemsQuery, $fromDate, $stateFilterPart, $identityFilterString, $OrderBy)
 
-    $workItems = getWorkItemsFromQuery $accountName $projectName $query $take
+    $workItems = getWorkItemsFromQuery $accountName $projectName $query $Take
 
     # Transform some properties to make them easily formatted
     $workItems = $workItems.fields | 

@@ -51,7 +51,6 @@ about_PsVso
     $localConfigPath = getLocalConfigPath
     $localConfig = readConfigFile $localConfigPath
 
-
     if($Local -and -not $Global) {
         return $localConfig
     }
