@@ -8,9 +8,6 @@ Resolve-Path |
 Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
-
-Import-Module .\PsVso.psm1 -Global
-
 Describe "Get-VsoConfig" {
     $globalConfig = '{"project": "globalProject", "account":"globalAccount"}'
     $localConfig = '{"project": "localProject", "repository":"localRepository"}'
