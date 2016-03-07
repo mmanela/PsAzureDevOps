@@ -1,14 +1,11 @@
 
-function Query-WorkItems {
+function Get-WorkItems {
 <#
 .SYNOPSIS
-Queries for work items given WIQL
+Gets workitems given a query
 
 .DESCRIPTION
-Get-MyWorkItems queries for the open work items that are created by or assigned
-to you. By default it will include just items updated in the last 30 days and 
-filter out any work items that are in a "finished" state according to the
-agile, scrum or cmmi templates. 
+Get-WorkItems by running a query and returning the results
 
 .PARAMETER Query
 The query to run
@@ -24,12 +21,12 @@ If your VSO url is hello.visualstudio.com then this value should be hello.
 The project name to use. Can be inherited from a config file.
 
 .Example
-Query-WorkItems -Query  "SELECT [System.Id], [System.Title] FROM WorkItems WHERE [System.TeamProject] = @project AND [System.AssignedTo] = 'Joe Smith'"
+Get-WorkItems -Query  "SELECT [System.Id], [System.Title] FROM WorkItems WHERE [System.TeamProject] = @project AND [System.AssignedTo] = 'Joe Smith'"
 
 Gets work items assigned to current user
 
 .Example
-Query-WorkItems -Query  "SELECT [System.Id], [System.Title] FROM WorkItems WHERE [System.TeamProject] = @project AND [System.AssignedTo] = 'Joe Smith'" -Take 10
+Get-WorkItems -Query  "SELECT [System.Id], [System.Title] FROM WorkItems WHERE [System.TeamProject] = @project AND [System.AssignedTo] = 'Joe Smith'" -Take 10
 
 
 .LINK

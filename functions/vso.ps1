@@ -10,7 +10,7 @@ $script:identityUrl =         "https://{0}.visualstudio.com/defaultcollection/_a
 $script:pullRequestUrl =      "https://{0}.visualstudio.com/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
 $script:openPullRequestUrl =  "https://{0}.visualstudio.com/defaultcollection/{1}/_git/{2}/pullrequest/{3}"
 $script:buildDefinitionsUrl = "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/definitions?name={2}&type={3}&`$top=1&api-version=2.0"
-$script:buildsUrl =           "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top=1&resultFilter=Failed,PartiallySucceeded,Succeeded&api-version=2.0"
+$script:buildsUrl =           "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top={4}&api-version=2.0"
 $script:runQueryUrl =         "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
 $script:getWorkItemsUrl =     "https://{0}.visualstudio.com/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
 $script:openWorkItemUrl=      "https://{0}.visualstudio.com/defaultcollection/_workitems/edit/{1}"
@@ -23,7 +23,7 @@ if($PsVso.OnPremiseMode) {
     $script:pullRequestUrl =      "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
     $script:openPullRequestUrl =  "http://{0}:8080/tfs/defaultcollection/{1}/_git/{2}/pullrequest/{3}"
     $script:buildDefinitionsUrl = "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/definitions?name={2}&type={3}&`$top=1&api-version=2.0"
-    $script:buildsUrl =           "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top=1&resultFilter=Failed,PartiallySucceeded,Succeeded&api-version=2.0"
+    $script:buildsUrl =           "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top={4}&api-version=2.0"
     $script:runQueryUrl =         "http://{0}:8080/tfs/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
     $script:getWorkItemsUrl=      "http://{0}:8080/tfs/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
     $script:openWorkItemUrl=      "http://{0}:8080/tfs/defaultcollection/_workitems/edit/{1}"
@@ -48,6 +48,17 @@ function openWorkItemInBrowser($account, $workItemId) {
     Start-Process $webWorkItemUrl
 }
 
+function getWorkItemsFromIds($account, $wiIds) {
+    
+    $wiIdString = $wiIds -join ","
+    $workItemsUrl = [System.String]::Format($script:getWorkItemsUrl, $account, $wiIdString)
+    $workItemsResult = getUrl $workItemsUrl    
+    
+    if($workItemsResult){
+        return $workItemsResult.value
+    }
+}
+
 function getWorkItemsFromQuery($account, $project, $query, $take) {
 
     $queryUrl = [System.String]::Format($script:runQueryUrl, $account, $project)
@@ -65,12 +76,9 @@ function getWorkItemsFromQuery($account, $project, $query, $take) {
     $resultIds = $queryResults.workItems.id | Select-Object -First $take
 
     if($resultIds) {
-        $wiIds = $resultIds -join ","
-        $workItemsUrl = [System.String]::Format($script:getWorkItemsUrl, $account, $wiIds)
-        $workItemsResult = getUrl $workItemsUrl
+        $workItems = getWorkItemsFromIds $account $resultIds
          
-        if($workItemsResult) {
-            $workItems = $workItemsResult.value
+        if($workItems) {
 
             # We need to sort the results by the query results since
             # work items rest call doesn't honor order
@@ -85,12 +93,12 @@ function getWorkItemsFromQuery($account, $project, $query, $take) {
 
 }
 
-function getBuilds($account, $project, $definition, $type) {
+function getBuilds($account, $project, $definition, $type, $take) {
     
     $getBuildDefinitionUrl = [System.String]::Format($script:buildDefinitionsUrl, $account, $project, $definition, $type)
     $definitionResult = getUrl $getBuildDefinitionUrl
     if($definitionResult.value) {
-        $getBuildUrl = [System.String]::Format($script:buildsUrl, $account, $project, $definitionResult.value.id, $type)
+        $getBuildUrl = [System.String]::Format($script:buildsUrl, $account, $project, $definitionResult.value.id, $type, $take)
         $buildResults = getUrl $getBuildUrl
 
         if($buildResults) {

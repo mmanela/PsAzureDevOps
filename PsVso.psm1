@@ -22,11 +22,11 @@ Update-FormatData -PrependPath "$moduleRoot\WorkItem.Format.ps1xml"
 
 Export-ModuleMember Push-ToVso, 
                     Submit-PullRequest,
-                    Get-BuildStatus, 
+                    Get-Builds, 
                     Get-VsoConfig, 
                     Set-VsoConfig, 
                     Get-MyWorkItems,
-                    Query-WorkItems, 
+                    Get-WorkItems, 
                     Open-WorkItems 
                     #,getUrl, postUrl, getProjects, getRepos, getProjectId, getIdentityId, getRepoId,getWorkItemsFromQuery
 
