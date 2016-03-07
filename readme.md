@@ -16,7 +16,11 @@ Install PsVso
 choco install PsVso
 ```
 
-Once installed all the cmdlets should be auto-loaded and ready to use.
+Once installed all the cmdlets should be auto-loaded and ready to use. If not just run
+```
+Import-Module PsVso 
+```
+
 
 Usage
 -----
