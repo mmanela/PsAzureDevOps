@@ -91,7 +91,7 @@ about_PsVso
     $accountName    = getFromValueOrConfig $Account $script:config_accountKey
     $projectName    = getFromValueOrConfig $Project $script:config_projectKey
 
-    $fromDate = (Get-Date).AddDays(-30).ToUniversalTime().Date.ToString("o")
+    $fromDate = (Get-Date).AddDays(-30).ToShortDateString()
 
 
     $identityFilterFields = @()

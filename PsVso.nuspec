@@ -15,9 +15,7 @@ This module requires PowersShell version 3 or greater. No explicit dependency is
     <projectUrl>https://github.com/mmanela/PsVso</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <releaseNotes>
-      * Fix formatting on work item output
-      * Open pull request after creating one
-      * Allow SourceBranch and TargetBranch to be inherited from config
+      * Clean up cmdlet definitions
     </releaseNotes>
   </metadata>
   <files>
@@ -27,7 +25,6 @@ This module requires PowersShell version 3 or greater. No explicit dependency is
     <file src="PsVso.psd1" target="tools" />
     <file src="*.ps1xml" target="tools" />
     <file src="lib\VsoOM\*.*" target="tools\lib\VsoOM" />
-    <file src="lib\VsoRestProxy\*.*" target="tools\lib\VsoRestProxy" />
     <file src="functions\**\*.*" target="tools\functions" />
     <file src="cmdlets\**\*.*" target="tools\cmdlets" />
     <file src="en-US\*.*" target="tools\en-US" />
