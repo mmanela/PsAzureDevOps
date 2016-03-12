@@ -1,4 +1,4 @@
-if(Get-Module PsVso){ Remove-Module PsVso }
+if(Get-Module PsVsts){ Remove-Module PsVsts }
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
@@ -8,7 +8,7 @@ Resolve-Path |
 Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
-Describe "Get-VsoConfig" {
+Describe "Get-VstsConfig" {
 
     BeforeAll {
         $globalConfig = '{"project": "globalProject", "account":"globalAccount"}'
@@ -33,7 +33,7 @@ Describe "Get-VsoConfig" {
     }
     
     Context "When asking for just local config" {
-        $result = Get-VsoConfig -Local
+        $result = Get-VstsConfig -Local
                 
         It "returns all local values"{
             $result.count | Should be 2
@@ -46,7 +46,7 @@ Describe "Get-VsoConfig" {
     }
 
     Context "When asking for just global config" {
-        $result = Get-VsoConfig -Global
+        $result = Get-VstsConfig -Global
 
         It "returns all local values"{
             $result.count | Should be 2
@@ -59,7 +59,7 @@ Describe "Get-VsoConfig" {
     }
 
     Context "When asking for config" {
-        $result = Get-VsoConfig
+        $result = Get-VstsConfig
 
 
         It "returns all combined values"{

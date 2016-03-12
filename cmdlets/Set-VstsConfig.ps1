@@ -1,12 +1,12 @@
 
-function Set-VsoConfig
+function Set-VstsConfig
 {
 <#
 .SYNOPSIS
 Sets values in a (local or global) config file.
 
 .DESCRIPTION
-Set-VsoConfig lets you set the value for certain properties of 
+Set-VstsConfig lets you set the value for certain properties of 
 cmdlets. By setting these in the config file you no longer need to pass them
 to the functions. You can set a value in either a local or global config. 
 This lets you put local configs file in your projects and store more global 
@@ -27,17 +27,17 @@ This is the default.
 Flag indicates you want to set value in the global config file.
 
 .Example
-Set-VsoConfig -Name Project -Value MyProject
+Set-VstsConfig -Name Project -Value MyProject
 
 Sets the property Project to the value MyProject in the global config
 
 .Example
-Set-VsoConfig -Name Project -Value MyProject -Local
+Set-VstsConfig -Name Project -Value MyProject -Local
 
 Sets the property Project to the value MyProject in a local config
 
 .LINK
-about_PsVso
+about_PsVsts
 
 #>
     [CmdletBinding()]
@@ -69,11 +69,11 @@ about_PsVso
             $configPath = Join-Path (Get-Location) $configFileName
         }
 
-        $configObject = Get-VsoConfig -Local
+        $configObject = Get-VstsConfig -Local
     }
     else {
         $configPath = $script:globalConfigPath
-        $configObject = Get-VsoConfig -Global
+        $configObject = Get-VstsConfig -Global
     }
 
     if(-not (Test-Path $configPath)) {

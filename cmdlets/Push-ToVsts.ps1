@@ -1,11 +1,11 @@
 
-function Push-ToVso {
+function Push-ToVsts {
 <#
 .SYNOPSIS
-Clones the current git repo to a VSO project.
+Clones the current git repo to a VSTS project.
 
 .DESCRIPTION
-Calling Push-ToVso will clone your git repo to a VSO project. If you don't specify a project it will try to use the default one.
+Calling Push-ToVsts will clone your git repo to a VSTS project. If you don't specify a project it will try to use the default one.
 If no default project is configure it will error. You must run this command from inside of your git repo folder.
 
 .PARAMETER Repository
@@ -13,24 +13,24 @@ The repository name to use. Can be inherited from a config file.
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSO url is hello.visualstudio.com then this value should be hello.
+If your VSTS url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
 
 .Example
-Push-ToVso 
+Push-ToVsts 
 
 This will look for a git repo in the current directory and try to find an already configured project/account. 
 It will then create a repo in that project and push to it. 
 
 .Example
-Push-ToVso -Project MyProject -Account MyAccount
+Push-ToVsts -Project MyProject -Account MyAccount
 
 Finds a git repo in current directory and adds it to the given account/project
 
 .LINK
-about_PsVso
+about_PsVsts
 
 #>
     [CmdletBinding()]
@@ -58,12 +58,12 @@ about_PsVso
    $remoteUrl = $repoResult.remoteUrl
 
    # Figure out if origin is already defined
-   # if so we try to use the psvso remote name
+   # if so we try to use the PsVsts remote name
    $currentRemotes = git remote
    $remoteName = "origin"
    if($currentRemotes -and $currentRemotes.Contains("origin")) {
-    Write-Host "origin remote already exists so create psvso remote"
-    $remoteName = "psvso"
+    Write-Host "origin remote already exists so create PsVsts remote"
+    $remoteName = "PsVsts"
    }
 
     Write-Host "Add remote $remoteName $remoteUrl"

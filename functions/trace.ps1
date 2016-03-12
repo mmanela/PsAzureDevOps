@@ -1,5 +1,5 @@
 function traceMessage($message) {
-    if($PsVso.EnableLogging) {
+    if($PsVsts.EnableLogging) {
         Write-Host $message
     }
 }

@@ -1,8 +1,8 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-if(!$Global:PsVso) { 
-    $Global:PsVso = @{} 
-    $PsVso.EnableLogging=$true
+if(!$Global:PsVsts) { 
+    $Global:PsVsts = @{} 
+    $PsVsts.EnableLogging=$true
 }
 
 "$here\..\functions\*.ps1", "$here\..\cmdlets\*.ps1" |
@@ -11,7 +11,7 @@ Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
 
-Describe "Set-VsoConfig" {
+Describe "Set-VstsConfig" {
    
     $script:globalConfigPath = Join-Path "TestDrive:\global\config" $script:configFileName
     New-Item  $globalConfigPath -ItemType File -Force -ErrorAction SilentlyContinue
@@ -21,11 +21,11 @@ Describe "Set-VsoConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
 
-        Set-VsoConfig Project MyProject
-        Set-VsoConfig Account MyAccount
+        Set-VstsConfig Project MyProject
+        Set-VstsConfig Account MyAccount
 
 
-        $localConfig = Get-VsoConfig -Local
+        $localConfig = Get-VstsConfig -Local
 
         It "sets values to local config file by default"{
 
@@ -44,15 +44,15 @@ Describe "Set-VsoConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
 
-        Set-VsoConfig Account GlobalAccount -Global
+        Set-VstsConfig Account GlobalAccount -Global
 
-        Set-VsoConfig Project MyProject -Local
-        Set-VsoConfig Account MyAccount -Local
+        Set-VstsConfig Project MyProject -Local
+        Set-VstsConfig Account MyAccount -Local
 
 
-        $localConfig = Get-VsoConfig -Local
-        $globalConfig = Get-VsoConfig -Global
-        $activeConfig = Get-VsoConfig
+        $localConfig = Get-VstsConfig -Local
+        $globalConfig = Get-VstsConfig -Global
+        $activeConfig = Get-VstsConfig
 
         It "sets values to local config file"{
 
@@ -84,14 +84,14 @@ Describe "Set-VsoConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
        
-        Set-VsoConfig Project GlobalProject -Global
-        Set-VsoConfig Account GlobalAccount -Global
+        Set-VstsConfig Project GlobalProject -Global
+        Set-VstsConfig Account GlobalAccount -Global
 
-        Set-VsoConfig Account MyAccount -Local
+        Set-VstsConfig Account MyAccount -Local
 
-        $localConfig = Get-VsoConfig -Local
-        $globalConfig = Get-VsoConfig -Global
-        $activeConfig = Get-VsoConfig
+        $localConfig = Get-VstsConfig -Local
+        $globalConfig = Get-VstsConfig -Global
+        $activeConfig = Get-VstsConfig
 
         It "sets values to global config file"{
 
@@ -125,25 +125,25 @@ Describe "Set-VsoConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
        
-        Set-VsoConfig Project MyProject -Local
-        Set-VsoConfig Account MyAccount -Local
+        Set-VstsConfig Project MyProject -Local
+        Set-VstsConfig Account MyAccount -Local
 
         $localConfigFolder2 = "TestDrive:\localConfig3\deep\nested"
         New-Item  $localConfigFolder2 -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder2
 
 
-        Set-VsoConfig Account MyAccountNested -Local
+        Set-VstsConfig Account MyAccountNested -Local
 
-        $localConfigNested = Get-VsoConfig -Local
-        $activeConfigNested = Get-VsoConfig
+        $localConfigNested = Get-VstsConfig -Local
+        $activeConfigNested = Get-VstsConfig
 
 
         Pop-Location 
 
 
-        $localConfig = Get-VsoConfig -Local
-        $activeConfig = Get-VsoConfig
+        $localConfig = Get-VstsConfig -Local
+        $activeConfig = Get-VstsConfig
 
         It "sets values to local config file"{
 

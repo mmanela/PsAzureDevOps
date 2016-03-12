@@ -1,6 +1,6 @@
-PsVso
+PsVsts
 =======
-PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.
+PsVsts provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.
 
 Install
 ----
@@ -11,21 +11,21 @@ Install chocolatey (if you don't have it yet)
 iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 ```
 
-Install PsVso
+Install PsVsts
 ```
-choco install PsVso
+choco install PsVsts
 ```
 
 Once installed all the cmdlets should be auto-loaded and ready to use. If not just run
 ```
-Import-Module PsVso 
+Import-Module PsVsts 
 ```
 
 
 Usage
 -----
 
-PsVso contains several cmdlets to automate some common operations. You can see details of each one through normal PowerShell docs. 
+PsVsts contains several cmdlets to automate some common operations. You can see details of each one through normal PowerShell docs. 
 
 
 - **Get-MyWorkItems** 
@@ -34,8 +34,8 @@ PsVso contains several cmdlets to automate some common operations. You can see d
 - **Open-WorkItems**
       Opens work items in your web browser.
       
-- **Push-ToVso**      
-      Takes a local git repo, creates a corresponding repo in your VSO project, adds that repo as a remote origin and pushes your local repo to it.
+- **Push-ToVsts**      
+      Takes a local git repo, creates a corresponding repo in your VSTS project, adds that repo as a remote origin and pushes your local repo to it.
 
 - **Submit-PullRequest**
       Submits a pull request
@@ -43,8 +43,8 @@ PsVso contains several cmdlets to automate some common operations. You can see d
 - **Get-BuildStatus**
     Gets the status of the last build
 
-- **Set-VsoConfig**
-    Sets a config value for use in other PsVso functions
+- **Set-VstsConfig**
+    Sets a config value for use in other PsVsts functions
 
-- **Get-VsoConfig**
+- **Get-VstsConfig**
     Gets the config values

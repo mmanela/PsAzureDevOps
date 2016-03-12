@@ -1,12 +1,12 @@
 
-function Get-VsoConfig
+function Get-VstsConfig
 {
 <#
 .SYNOPSIS
 Get the values stored in the config files
 
 .DESCRIPTION
-Get-VsoConfig gets the values in the active config files. You can choose to see values 
+Get-VstsConfig gets the values in the active config files. You can choose to see values 
 defined in the local config file, global config file, or both.
 
 By default a combined result is shown which shows all config values that are 
@@ -20,18 +20,18 @@ Flag indicates you want to see the local config values
 Flag indicates you want to see the global config values
 
 .Example
-Get-VsoConfig 
+Get-VstsConfig 
 
 Gets all the config values by take the global config and overriding matching properties 
 with local config values
 
 .Example
-Get-VsoConfig -Global
+Get-VstsConfig -Global
 
 Gets all the global config values.
 
 .LINK
-about_PsVso
+about_PsVsts
 
 #>
     [CmdletBinding()]

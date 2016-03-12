@@ -1,8 +1,8 @@
 $tools = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 . (Join-Path $tools Setup.ps1)
 try { 
-    Install-PsVso "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+    Install-PsVsts "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 } catch {
-    Write-ChocolateyFailure "PsVso" "$($_.Exception.Message)"
+    Write-ChocolateyFailure "PsVsts" "$($_.Exception.Message)"
     throw 
 }

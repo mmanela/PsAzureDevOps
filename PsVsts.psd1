@@ -1,10 +1,10 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-RootModule = 'PsVso.psm1'
+RootModule = 'PsVsts.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.5.5'
+ModuleVersion = '0.5.6'
 
 # ID used to uniquely identify this module
 GUID = '30f59c9a-b2b9-4300-b53a-d3f9e78c0cc0'
@@ -16,10 +16,10 @@ Author = 'Matthew Manela'
 CompanyName = 'Matthew Manela'
 
 # Copyright statement for this module
-Copyright = 'Copyright (c) 2014 by Matthew Manela, licensed under Apache 2.0 License.'
+Copyright = 'Copyright (c) 2016 by Matthew Manela, licensed under Apache 2.0 License.'
 
 # Description of the functionality provided by this module
-Description = 'PsVso provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.'
+Description = 'PsVsts provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '3.0'
@@ -31,9 +31,9 @@ DotNetFrameworkVersion = '4.5'
 FunctionsToExport = '*'
 
 RequiredAssemblies = @( 
-    "lib\VsoOM\Microsoft.VisualStudio.Services.Client.dll",
-    "lib\VsoOM\Microsoft.VisualStudio.Services.WebApi.dll",
-    "lib\VsoOM\Microsoft.VisualStudio.Services.Common.dll",
+    "lib\VstsOM\Microsoft.VisualStudio.Services.Client.dll",
+    "lib\VstsOM\Microsoft.VisualStudio.Services.WebApi.dll",
+    "lib\VstsOM\Microsoft.VisualStudio.Services.Common.dll",
     "System.Net.Http.dll"
 )
 
@@ -63,13 +63,13 @@ PrivateData = @{
         Category = "Scripting Techniques"
 
         # Keyword tags to help users find this module via navigations and search.
-        Tags = @('powershell','VSO','git','VisualStudio','VisualStudioOnline')
+        Tags = @('powershell','VSO','VSTS','TFS','git','VisualStudio','VisualStudioOnline')
 
         # The web address of an icon which can be used in galleries to represent this module
         #IconUri = "http://iconpath"
 
         # The web address of this module's project or support homepage.
-        ProjectUri = "https://github.com/mmanela/PsVso"
+        ProjectUri = "https://github.com/mmanela/PsVsts"
 
         # The web address of this module's license. Points to a page that's embeddable and linkable.
         LicenseUri = "http://www.apache.org/licenses/LICENSE-2.0.html"

@@ -29,7 +29,7 @@ The repository name to use. Can be inherited from a config file.
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSO url is hello.visualstudio.com then this value should be hello.
+If your VSTS url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
@@ -38,7 +38,7 @@ The project name to use. Can be inherited from a config file.
 Submit-PullRequest -Title "This is good"  -Reviewers "Matthew Manela", "john@gmail.com"  -Repository someRepo -SourceBranch someBranch -TargetBranch master -Account myAccount -Project myProject
 
 .LINK
-about_PsVso
+about_PsVsts
 
 #>
     [CmdletBinding()]

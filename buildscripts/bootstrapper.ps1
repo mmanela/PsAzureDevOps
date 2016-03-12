@@ -1,15 +1,15 @@
-function Get-PsVso {
+function Get-PsVsts {
     Param(
         [switch] $Force
     )
-    Write-Output "Welcome to the PsVso Module installer!"
+    Write-Output "Welcome to the PsVsts Module installer!"
     if(Check-Chocolatey -Force:$Force){
-        Write-Output "Chocolatey installed, Installing PsVso Modules."
-        cinst PsVso
-        $Message = "PsVso Module Installer completed"
+        Write-Output "Chocolatey installed, Installing PsVsts Modules."
+        cinst PsVsts
+        $Message = "PsVsts Module Installer completed"
     }
     else {
-        $Message = "Did not detect Chocolatey and unable to install. Installation of PsVso has been aborted."
+        $Message = "Did not detect Chocolatey and unable to install. Installation of PsVsts has been aborted."
     }
     if($Force) {
         Write-Host $Message

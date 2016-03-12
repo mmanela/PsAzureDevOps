@@ -15,7 +15,7 @@ The number of work items to show. Defaults to the 200. Max is 200.
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSO url is hello.visualstudio.com then this value should be hello.
+If your VSTS url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
@@ -30,7 +30,7 @@ Get-WorkItems -Query  "SELECT [System.Id], [System.Title] FROM WorkItems WHERE [
 
 
 .LINK
-about_PsVso
+about_PsVsts
 
 #>
     [CmdletBinding()]

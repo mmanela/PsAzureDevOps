@@ -1,9 +1,9 @@
 TOPIC
-	PsVso
+	PsVsts
 
 SYNOPSIS
-  PsVso provides a suite of PowerShell functions that help automate interaction 
+  PsVsts provides a suite of PowerShell functions that help automate interaction 
   with  VisualStudio Online.
 
 DESCRIPTION
-	PsVso helps make it so you never need to leave your command prompt.
+	PsVsts helps make it so you never need to leave your command prompt.

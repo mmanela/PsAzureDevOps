@@ -1,4 +1,4 @@
-function Install-PsVso($here) {
+function Install-PsVsts($here) {
 
 
     $ModulePaths = @($env:PSModulePath -split ';')
@@ -12,22 +12,22 @@ function Install-PsVso($here) {
 
     if (-not (Test-Path $Destination)) {
         New-Item $Destination -ItemType Directory -Force | Out-Null
-    } elseif (Test-Path (Join-Path $Destination "PsVso")) {
-        Remove-Item (Join-Path $Destination "PsVso") -Recurse -Force
+    } elseif (Test-Path (Join-Path $Destination "PsVsts")) {
+        Remove-Item (Join-Path $Destination "PsVsts") -Recurse -Force
     }
 
-    $PsVsoPath=Join-Path $Destination "PsVso"
-    if(!(test-Path $PsVsoPath)){
-        mkdir $PsVsoPath
+    $PsVstsPath=Join-Path $Destination "PsVsts"
+    if(!(test-Path $PsVstsPath)){
+        mkdir $PsVstsPath
     }
 
-    Copy-Item "$here/*" $PsVsoPath -Recurse -Force -Exclude ChocolateyInstall.ps1, Setup.*
+    Copy-Item "$here/*" $PsVstsPath -Recurse -Force -Exclude ChocolateyInstall.ps1, Setup.*
 
     $successMsg = @"
-The PsVso Module has been copied to $PsVsoPath and added to your Module path. 
+The PsVsts Module has been copied to $PsVstsPath and added to your Module path. 
 
-To find more info visit https://github.com/mmanela/PsVso or use:
-PS:>Get-Help PsVso
+To find more info visit https://github.com/mmanela/PsVsts or use:
+PS:>Get-Help PsVsts
 "@
     Write-Host $successMsg
 
