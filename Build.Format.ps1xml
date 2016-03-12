@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Configuration>  
+  <ViewDefinitions>
+    <View>
+      <Name>Build</Name>
+      <ViewSelectedBy>
+        <TypeName>Build</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Build Number</Label>
+            <Width>7</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Status</Label>
+            <Width>15</Width>
+          </TableColumnHeader>          
+          <TableColumnHeader>
+            <Label>Result</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Start Time</Label>
+            <Width>30</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Finish Time</Label>
+            <Width>30</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+               <PropertyName>buildNumber</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+               <PropertyName>status</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>result</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>startTime</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>finishTime</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

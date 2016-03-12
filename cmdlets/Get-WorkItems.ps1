@@ -54,23 +54,6 @@ about_PsVso
     $workItems = getWorkItemsFromQuery $accountName $projectName $Query $Take
 
     # Transform some properties to make them easily formatted
-    $workItems = $workItems.fields | 
-    ForEach-Object { 
-            [PSCustomObject]@{
-                Id=$_.'System.Id'
-                Title=$_.'System.Title'
-                WorkItemType=$_.'System.WorkItemType'
-                AssignedTo=$_.'System.AssignedTo'
-                CreatedBy=$_.'System.CreatedBy'
-                CreatedDate=$_.'System.CreatedDate'
-                ChangedDate=$_.'System.ChangedDate'
-                State=$_.'System.State'
-                Fields=$_
-            } 
-        }
-
-
-    # Transform some properties to make them easily formatted
     $workItems = formatWorkItems $workItems
 
     return $workItems

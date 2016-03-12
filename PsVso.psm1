@@ -18,6 +18,7 @@ ForEach-Object { . $_.ProviderPath }
 
 
 Update-FormatData -PrependPath "$moduleRoot\WorkItem.Format.ps1xml"
+Update-FormatData -PrependPath "$moduleRoot\Build.Format.ps1xml"`
 
 
 Export-ModuleMember Push-ToVso, 

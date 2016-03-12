@@ -50,26 +50,8 @@ about_PsVso
 
     $buildResults = getBuilds $accountName $projectName $definitionName $Type $Take
 
-    if($buildResults) {
-        
-        $buildResults | ForEach-Object {
-            
-            $build = $_
-            if(($build.status -eq "succeeded") -or ($build.status -eq "completed")) {
-                Write-Host "Build $($build.buildNumber) SUCCEEDED" -ForegroundColor Green
-            }
-            elseif($build.status -eq "failed") {
-                Write-Host "Build $($build.buildNumber) FAILED" -ForegroundColor Red
-            }
-            else {
-                Write-Host "Build $($build.buildNumber) $($build.status.ToUpper())"
-            }
-            
-        }
-        
-    }
-    else {
-        Write-Warning "Unable to find build for $definitionName"
-    }
+    $buildResults = formatBuilds $buildResults
+
+    return $buildResults
 
 }

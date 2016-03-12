@@ -23,3 +23,11 @@ function formatWorkItems($workItems) {
 	
 	return $workItems
 }
+
+function formatBuilds($builds) {
+    
+    # Add type name
+    $builds | ForEach-Object { $_.PSObject.TypeNames.Insert(0,'Build') }
+	
+	return $builds
+}
