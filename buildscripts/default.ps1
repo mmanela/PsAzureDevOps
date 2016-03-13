@@ -7,9 +7,7 @@ properties {
 
     if(Get-Command Git -ErrorAction SilentlyContinue) {
         $versionTag = git describe --abbrev=0 --tags
-        $version = $versionTag + "."
-        $version += (git log $($version + '..') --pretty=oneline | measure-object).Count
-        $changeset=(git log -1 $($versionTag + '..') --pretty=format:%H)
+        $version = $versionTag + ".0"
     }
     else {
         $version="1.0.0"
