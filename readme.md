@@ -31,6 +31,9 @@ PsVsts contains several cmdlets to automate some common operations. You can see 
 - **Get-MyWorkItems** 
       Gets the work items that are assigned to or created by you. Provides easy way to filter by open vs finished items.
       
+- **Get-WorkItems** 
+      Gets the work items given a query.
+      
 - **Open-WorkItems**
       Opens work items in your web browser.
       
@@ -40,8 +43,8 @@ PsVsts contains several cmdlets to automate some common operations. You can see 
 - **Submit-PullRequest**
       Submits a pull request
 
-- **Get-BuildStatus**
-    Gets the status of the last build
+- **Get-Builds**
+    Gets a list of builds
 
 - **Set-VstsConfig**
     Sets a config value for use in other PsVsts functions
