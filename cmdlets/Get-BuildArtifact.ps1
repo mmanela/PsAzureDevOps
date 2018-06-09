@@ -1,11 +1,11 @@
 
-function Get-Builds {
+function Get-BuildArtifact {
 <#
 .SYNOPSIS
-Gets builds
+Gets latest build artifact by name
 
 .DESCRIPTION
-Get-Builds will query your VSTS project to get the recent builds
+Get-BuildArtifact will query your VSTS project to get the recent build's artifact by name
 
 .PARAMETER BuildDefinition
 The name of the build definition.  Can be inherited from a config file.
@@ -17,11 +17,11 @@ If your VSTS url is hello.visualstudio.com then this value should be hello.
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
 
-.PARAMETER Take
-The number of builds to show. Defaults to the 5.
+.PARAMETER Artifact
+The artifact name to get artifact for.
 
 .Example
-Get-Builds -BuildDefinition myBuildDef -Account myAccount -Project myProject
+Get-Artifact -BuildDefinition myBuildDef -Account myAccount -Project myProject -Artifact myArtifactName
 
 .LINK
 about_PsVsts
@@ -36,7 +36,7 @@ about_PsVsts
         [Parameter(Mandatory = $false)]
         [string]$Project,
         [Parameter(Mandatory = $false)]
-        [int]$Take = 5,
+        [string]$Artifact,
         [Parameter(Mandatory = $false)]
         [ValidateSet('build','xaml')]
         [string]$Type = "build"
@@ -48,10 +48,9 @@ about_PsVsts
     $accountName    = getFromValueOrConfig $Account $script:config_accountKey
     $projectName    = getFromValueOrConfig $Project $script:config_projectKey
 
-    $buildResults = getBuilds $accountName $projectName $definitionName $Type $Take
+    $buildArtifactResults = getBuildArtifact $accountName $projectName $definitionName $Artifact $Type
 
-    $buildResults = formatBuilds $buildResults
+    $buildArtifactResults = formatArtifact $buildArtifactResults $Artifact
 
-    return $buildResults
-
+    return $buildArtifactResults
 }

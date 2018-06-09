@@ -1,11 +1,11 @@
 
-function Get-Builds {
+function Get-BuildCodeCoverage {
 <#
 .SYNOPSIS
-Gets builds
+Gets latest build code coverage
 
 .DESCRIPTION
-Get-Builds will query your VSTS project to get the recent builds
+Get-BuildCodeCoverage will query your VSTS project to get the recent build's code coverage results
 
 .PARAMETER BuildDefinition
 The name of the build definition.  Can be inherited from a config file.
@@ -16,9 +16,6 @@ If your VSTS url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
-
-.PARAMETER Take
-The number of builds to show. Defaults to the 5.
 
 .Example
 Get-Builds -BuildDefinition myBuildDef -Account myAccount -Project myProject
@@ -36,8 +33,6 @@ about_PsVsts
         [Parameter(Mandatory = $false)]
         [string]$Project,
         [Parameter(Mandatory = $false)]
-        [int]$Take = 5,
-        [Parameter(Mandatory = $false)]
         [ValidateSet('build','xaml')]
         [string]$Type = "build"
     )
@@ -48,10 +43,10 @@ about_PsVsts
     $accountName    = getFromValueOrConfig $Account $script:config_accountKey
     $projectName    = getFromValueOrConfig $Project $script:config_projectKey
 
-    $buildResults = getBuilds $accountName $projectName $definitionName $Type $Take
+    $codeCoverageResults = getBuildCodeCoverage $accountName $projectName $definitionName $Type
 
-    $buildResults = formatBuilds $buildResults
+    $codeCoverageResults = formatCoverage $codeCoverageResults
 
-    return $buildResults
+    return $codeCoverageResults
 
 }
