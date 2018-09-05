@@ -31,3 +31,38 @@ function formatBuilds($builds) {
 	
 	return $builds
 }
+
+function formatCoverage($coverage) {
+
+ 	$coverage = $coverage | 
+	    ForEach-Object { 
+	            [PSCustomObject]@{
+	                Label=$_.'label'
+	                Build=$_.'build'
+	                Coverage="$($_.'coverage') %"
+	            } 
+	        }
+
+    # Add type name
+    $coverage | ForEach-Object { $_.PSObject.TypeNames.Insert(0,'Coverage') }
+	
+	return $coverage
+}
+
+function formatArtifact($artifactData, $artifactName) {
+
+ 	$artifact = $artifactData | 
+	    ForEach-Object { 
+	            [PSCustomObject]@{
+					Artifact=$artifactName
+	                Type=$_.'type'
+	                Data=$_.'data'
+	                DownloadURL="$($_.'downloadurl') %"
+	            } 
+	        }
+
+    # Add type name
+    $artifact | ForEach-Object { $_.PSObject.TypeNames.Insert(0,'Artifact') }
+	
+	return $artifact
+}

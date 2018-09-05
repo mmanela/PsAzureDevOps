@@ -17,13 +17,14 @@ ForEach-Object { . $_.ProviderPath }
 
 
 
-Update-FormatData -PrependPath "$moduleRoot\WorkItem.Format.ps1xml"
-Update-FormatData -PrependPath "$moduleRoot\Build.Format.ps1xml"`
+Update-FormatData -PrependPath "$moduleRoot\formats\*.ps1xml"`
 
 
 Export-ModuleMember Push-ToVsts, 
                     Submit-PullRequest,
-                    Get-Builds, 
+                    Get-Builds,
+					Get-BuildCodeCoverage,
+					Get-BuildArtifact,
                     Get-VstsConfig, 
                     Set-VstsConfig, 
                     Get-MyWorkItems,

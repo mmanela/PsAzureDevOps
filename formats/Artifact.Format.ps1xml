@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Configuration>  
+  <ViewDefinitions>
+    <View>
+      <Name>Artifact</Name>
+      <ViewSelectedBy>
+        <TypeName>Artifact</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Artifact</Label>
+            <Width>10</Width>
+          </TableColumnHeader>          
+          <TableColumnHeader>
+            <Label>Type</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Data</Label>
+            <Width>55</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Download URL</Label>
+            <Width>25</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+               <PropertyName>Artifact</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+               <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+               <PropertyName>Data</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+               <PropertyName>DownloadURL</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

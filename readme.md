@@ -46,6 +46,12 @@ PsVsts contains several cmdlets to automate some common operations. You can see 
 - **Get-Builds**
     Gets a list of builds
 
+- **Get-BuildCodeCoverage**
+    Gets the code coverage details for the specified build definition's latest successful build
+
+- **Get-BuildArtifact**
+    Gets the specified build artifact for the specified build definition's latest successful build
+
 - **Set-VstsConfig**
     Sets a config value for use in other PsVsts functions
 

@@ -10,7 +10,9 @@ $script:identityUrl =         "https://{0}.visualstudio.com/defaultcollection/_a
 $script:pullRequestUrl =      "https://{0}.visualstudio.com/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
 $script:openPullRequestUrl =  "https://{0}.visualstudio.com/defaultcollection/{1}/_git/{2}/pullrequest/{3}"
 $script:buildDefinitionsUrl = "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/definitions?name={2}&type={3}&`$top=1&api-version=2.0"
-$script:buildsUrl =           "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top={4}&api-version=2.0"
+$script:buildsUrlWithFilters ="https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top={4}&{5}api-version=2.0"
+$script:codeCoverageUrl =     "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/test/CodeCoverage?buildId={2}"
+$script:buildArtifactUrl =    "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/build/builds/{2}/artifacts?artifactName={3}&api-version=4.1"
 $script:runQueryUrl =         "https://{0}.visualstudio.com/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
 $script:getWorkItemsUrl =     "https://{0}.visualstudio.com/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
 $script:openWorkItemUrl=      "https://{0}.visualstudio.com/defaultcollection/_workitems/edit/{1}"
@@ -23,7 +25,9 @@ if($PsVsts.OnPremiseMode) {
     $script:pullRequestUrl =      "http://{0}:8080/tfs/defaultcollection/_apis/git/repositories/{1}/pullRequests?api-version=1.0-preview.1"
     $script:openPullRequestUrl =  "http://{0}:8080/tfs/defaultcollection/{1}/_git/{2}/pullrequest/{3}"
     $script:buildDefinitionsUrl = "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/definitions?name={2}&type={3}&`$top=1&api-version=2.0"
-    $script:buildsUrl =           "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top={4}&api-version=2.0"
+    $script:buildsUrlWithFilters ="http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds?definitions={2}&type={3}&`$top={4}&{5}api-version=2.0"
+	$script:codeCoverageUrl =     "http://{0}:8080/tfs/defaultcollection/{1}/_apis/test/CodeCoverage?buildId={2}"
+    $script:buildArtifactUrl =    "http://{0}:8080/tfs/defaultcollection/{1}/_apis/build/builds/{2}/artifacts?artifactName={3}&api-version=4.1"
     $script:runQueryUrl =         "http://{0}:8080/tfs/defaultcollection/{1}/_apis/wit/wiql?api-version=1.0"
     $script:getWorkItemsUrl=      "http://{0}:8080/tfs/defaultcollection/_apis/wit/workitems?ids={1}&fields=System.Id,System.Title,System.WorkItemType,System.AssignedTo,System.CreatedBy,System.ChangedBy,System.CreatedDate,System.ChangedDate,System.State&api-version=1.0"
     $script:openWorkItemUrl=      "http://{0}:8080/tfs/defaultcollection/_workitems/edit/{1}"
@@ -93,16 +97,49 @@ function getWorkItemsFromQuery($account, $project, $query, $take) {
 
 }
 
-function getBuilds($account, $project, $definition, $type, $take) {
+function getBuilds($account, $project, $definition, $type, $take, $filters) {
     
     $getBuildDefinitionUrl = [System.String]::Format($script:buildDefinitionsUrl, $account, $project, $definition, $type)
     $definitionResult = getUrl $getBuildDefinitionUrl
     if($definitionResult.value) {
-        $getBuildUrl = [System.String]::Format($script:buildsUrl, $account, $project, $definitionResult.value.id, $type, $take)
+        $getBuildUrl = [System.String]::Format($script:buildsUrlWithFilters, $account, $project, $definitionResult.value.id, $type, $take, $filters)
         $buildResults = getUrl $getBuildUrl
 
         if($buildResults) {
             return $buildResults.value
+        }
+    }
+
+    return $null
+}
+
+function getBuildCodeCoverage($account, $project, $definition, $type) {
+	$buildResult = getBuilds $account $project $definition $type 1 "status=completed&resultFilter=succeeded&"
+	if ($buildResult) {
+		$getCodeCoverageUrl = [System.String]::Format($script:codeCoverageUrl, $account, $project, $buildResult.id)
+		$codeCoverageResults = getUrl $getCodeCoverageUrl
+		
+		if ($codeCoverageResults -and $codeCoverageResults.coverageData -and $codeCoverageResults.coverageData.coverageStats) {
+            for ($ct = 0; $ct -lt $codeCoverageResults.coverageData.coverageStats.Length; $ct++) {
+                $currentItem = $codeCoverageResults.coverageData.coverageStats[$ct]
+                $currentItem | Add-Member 'coverage' ([math]::Round((100 * [int] $currentItem.covered[0]) / [int] $currentItem.total[0], 2))
+                $currentItem | Add-Member 'build' $buildResult.buildNumber
+            }
+            return $codeCoverageResults.coverageData.coverageStats
+		}
+	}
+	
+	return $null
+}
+
+function getBuildArtifact($account, $project, $definition, $artifactName, $type) {
+	$buildResult = getBuilds $account $project $definition $type 1 "status=completed&resultFilter=succeeded&"
+	if ($buildResult) {
+		$getBuildArtifactUrl = [System.String]::Format($script:buildArtifactUrl, $account, $project, $buildResult.id, $artifactName)
+        $buildArtifactResults = getUrl $getBuildArtifactUrl
+
+        if ($buildArtifactResults) {
+            return $buildArtifactResults.resource
         }
     }
 
