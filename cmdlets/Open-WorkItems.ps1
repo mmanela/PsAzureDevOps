@@ -16,7 +16,7 @@ One or more work item objects (e.g. returned by Get-MyWorkItems) to open in the 
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSTS url is hello.visualstudio.com then this value should be hello.
+If your AzureDevOps url is hello.visualstudio.com then this value should be hello.
 
 
 .Example
@@ -35,7 +35,7 @@ Get-MyWorkItems -Take 2 | Open-WorkItems
 Open the two most recently changes work items created by or assigned to you
 
 .LINK
-about_PsVsts
+about_PsAzureDevOps
 
 #>
     [CmdletBinding(DefaultParameterSetName="WorkItemId")]

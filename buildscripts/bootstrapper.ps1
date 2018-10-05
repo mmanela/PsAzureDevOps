@@ -1,15 +1,15 @@
-function Get-PsVsts {
+function Get-PsAzureDevOps {
     Param(
         [switch] $Force
     )
-    Write-Output "Welcome to the PsVsts Module installer!"
+    Write-Output "Welcome to the PsAzureDevOps Module installer!"
     if(Check-Chocolatey -Force:$Force){
-        Write-Output "Chocolatey installed, Installing PsVsts Modules."
-        cinst PsVsts
-        $Message = "PsVsts Module Installer completed"
+        Write-Output "Chocolatey installed, Installing PsAzureDevOps Modules."
+        cinst PsAzureDevOps
+        $Message = "PsAzureDevOps Module Installer completed"
     }
     else {
-        $Message = "Did not detect Chocolatey and unable to install. Installation of PsVsts has been aborted."
+        $Message = "Did not detect Chocolatey and unable to install. Installation of PsAzureDevOps has been aborted."
     }
     if($Force) {
         Write-Host $Message

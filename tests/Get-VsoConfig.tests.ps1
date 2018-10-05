@@ -1,4 +1,4 @@
-if(Get-Module PsVsts){ Remove-Module PsVsts }
+if(Get-Module PsAzureDevOps){ Remove-Module PsAzureDevOps }
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
@@ -8,7 +8,7 @@ Resolve-Path |
 Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
-Describe "Get-VstsConfig" {
+Describe "Get-PsAzureDevOpsConfig" {
 
     BeforeAll {
         $globalConfig = '{"project": "globalProject", "account":"globalAccount"}'
@@ -33,7 +33,7 @@ Describe "Get-VstsConfig" {
     }
     
     Context "When asking for just local config" {
-        $result = Get-VstsConfig -Local
+        $result = Get-PsAzureDevOpsConfig -Local
                 
         It "returns all local values"{
             $result.count | Should be 2
@@ -46,7 +46,7 @@ Describe "Get-VstsConfig" {
     }
 
     Context "When asking for just global config" {
-        $result = Get-VstsConfig -Global
+        $result = Get-PsAzureDevOpsConfig -Global
 
         It "returns all local values"{
             $result.count | Should be 2
@@ -59,7 +59,7 @@ Describe "Get-VstsConfig" {
     }
 
     Context "When asking for config" {
-        $result = Get-VstsConfig
+        $result = Get-PsAzureDevOpsConfig
 
 
         It "returns all combined values"{

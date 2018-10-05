@@ -43,9 +43,9 @@ Task Test {
 }
 
 Task Version-Module {
-    (Get-Content "$baseDir\PsVsts.psd1") `
+    (Get-Content "$baseDir\PsAzureDevOps.psd1") `
       | % {$_ -replace "^ModuleVersion = '.*'`$", "ModuleVersion = '$version'" } `
-      | Set-Content "$baseDir\PsVsts.psd1"
+      | Set-Content "$baseDir\PsAzureDevOps.psd1"
 }
 
 
@@ -54,13 +54,13 @@ Task Pack-Nuget {
     create $packageDir
     
     exec {
-      . $nugetExe pack "$baseDir\PsVsts.nuspec" -OutputDirectory $packageDir `
+      . $nugetExe pack "$baseDir\PsAzureDevOps.nuspec" -OutputDirectory $packageDir `
       -NoPackageAnalysis -version $version
     }
 }
 
 Task Push-Chocolatey {
-    exec { chocolatey push $packageDir\PsVsts.$version.nupkg }
+    exec { chocolatey push $packageDir\PsAzureDevOps.$version.nupkg }
 }
 
 Task Clean-PackageFiles {

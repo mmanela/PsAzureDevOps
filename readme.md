@@ -11,21 +11,21 @@ Install chocolatey (if you don't have it yet)
 iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 ```
 
-Install PsVsts
+Install PsAzureDevOps
 ```
-choco install PsVsts
+choco install PsAzureDevOps
 ```
 
 Once installed all the cmdlets should be auto-loaded and ready to use. If not just run
 ```
-Import-Module PsVsts 
+Import-Module PsAzureDevOps 
 ```
 
 
 Usage
 -----
 
-PsVsts contains several cmdlets to automate some common operations. You can see details of each one through normal PowerShell docs. 
+PsAzureDevOps contains several cmdlets to automate some common operations. You can see details of each one through normal PowerShell docs. 
 
 
 - **Get-MyWorkItems** 
@@ -37,8 +37,8 @@ PsVsts contains several cmdlets to automate some common operations. You can see 
 - **Open-WorkItems**
       Opens work items in your web browser.
       
-- **Push-ToVsts**      
-      Takes a local git repo, creates a corresponding repo in your VSTS project, adds that repo as a remote origin and pushes your local repo to it.
+- **Push-ToAzureDevOps**      
+      Takes a local git repo, creates a corresponding repo in your AzureDevOps project, adds that repo as a remote origin and pushes your local repo to it.
 
 - **Submit-PullRequest**
       Submits a pull request
@@ -52,8 +52,8 @@ PsVsts contains several cmdlets to automate some common operations. You can see 
 - **Get-BuildArtifact**
     Gets the specified build artifact for the specified build definition's latest successful build
 
-- **Set-VstsConfig**
-    Sets a config value for use in other PsVsts functions
+- **Set-PsAzureDevOpsConfig**
+    Sets a config value for use in other PsAzureDevOps functions
 
-- **Get-VstsConfig**
+- **Get-PsAzureDevOpsConfig**
     Gets the config values

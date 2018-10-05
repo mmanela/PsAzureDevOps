@@ -1,6 +1,6 @@
 # Functions and variables used for the config related operations
 
-$script:configFileName = "PsVsts.json"
+$script:configFileName = "PsAzureDevOps.json"
 $script:globalConfigPath = Join-Path ([System.Environment]::ExpandEnvironmentVariables("%userprofile%")) $configFileName
 
 
@@ -13,7 +13,7 @@ $script:config_sourceBranch         = "sourceBranch"
 $script:config_targetBranch         = "targetBranch"
 
 function refreshCachedConfig() {
-    $script:cached_config = Get-VstsConfig
+    $script:cached_config = Get-PsAzureDevOpsConfig
 }
 
 # Checks a given value and if it is not empty return it 

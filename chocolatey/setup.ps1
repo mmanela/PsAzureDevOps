@@ -1,4 +1,4 @@
-function Install-PsVsts($here) {
+function Install-PsAzureDevOps($here) {
 
 
     $ModulePaths = @($env:PSModulePath -split ';')
@@ -12,22 +12,22 @@ function Install-PsVsts($here) {
 
     if (-not (Test-Path $Destination)) {
         New-Item $Destination -ItemType Directory -Force | Out-Null
-    } elseif (Test-Path (Join-Path $Destination "PsVsts")) {
-        Remove-Item (Join-Path $Destination "PsVsts") -Recurse -Force
+    } elseif (Test-Path (Join-Path $Destination "PsAzureDevOps")) {
+        Remove-Item (Join-Path $Destination "PsAzureDevOps") -Recurse -Force
     }
 
-    $PsVstsPath=Join-Path $Destination "PsVsts"
-    if(!(test-Path $PsVstsPath)){
-        mkdir $PsVstsPath
+    $PsAzureDevOpsPath=Join-Path $Destination "PsAzureDevOps"
+    if(!(test-Path $PsAzureDevOpsPath)){
+        mkdir $PsAzureDevOpsPath
     }
 
-    Copy-Item "$here/*" $PsVstsPath -Recurse -Force -Exclude ChocolateyInstall.ps1, Setup.*
+    Copy-Item "$here/*" $PsAzureDevOpsPath -Recurse -Force -Exclude ChocolateyInstall.ps1, Setup.*
 
     $successMsg = @"
-The PsVsts Module has been copied to $PsVstsPath and added to your Module path. 
+The PsAzureDevOps Module has been copied to $PsAzureDevOpsPath and added to your Module path. 
 
-To find more info visit https://github.com/mmanela/PsVsts or use:
-PS:>Get-Help PsVsts
+To find more info visit https://github.com/mmanela/PsAzureDevOps or use:
+PS:>Get-Help PsAzureDevOps
 "@
     Write-Host $successMsg
 

@@ -46,7 +46,7 @@ prevents this behavior and lets you specify just the states you want.
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSTS url is hello.visualstudio.com then this value should be hello.
+If your AzureDevOps url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
@@ -63,7 +63,7 @@ Gets the first 10 work items assigned to or created by the current user ordered 
 
 
 .LINK
-about_PsVsts
+about_PsAzureDevOps
 
 #>
     [CmdletBinding()]

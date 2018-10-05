@@ -1,8 +1,8 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-if(!$Global:PsVsts) { 
-    $Global:PsVsts = @{} 
-    $PsVsts.EnableLogging=$true
+if(!$Global:PsAzureDevOps) { 
+    $Global:PsAzureDevOps = @{} 
+    $PsAzureDevOps.EnableLogging=$true
 }
 
 "$here\..\functions\*.ps1", "$here\..\cmdlets\*.ps1" |
@@ -11,7 +11,7 @@ Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
 
-Describe "Set-VstsConfig" {
+Describe "Set-PsAzureDevOpsConfig" {
    
     $script:globalConfigPath = Join-Path "TestDrive:\global\config" $script:configFileName
     New-Item  $globalConfigPath -ItemType File -Force -ErrorAction SilentlyContinue
@@ -21,11 +21,11 @@ Describe "Set-VstsConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
 
-        Set-VstsConfig Project MyProject
-        Set-VstsConfig Account MyAccount
+        Set-PsAzureDevOpsConfig Project MyProject
+        Set-PsAzureDevOpsConfig Account MyAccount
 
 
-        $localConfig = Get-VstsConfig -Local
+        $localConfig = Get-PsAzureDevOpsConfig -Local
 
         It "sets values to local config file by default"{
 
@@ -44,15 +44,15 @@ Describe "Set-VstsConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
 
-        Set-VstsConfig Account GlobalAccount -Global
+        Set-PsAzureDevOpsConfig Account GlobalAccount -Global
 
-        Set-VstsConfig Project MyProject -Local
-        Set-VstsConfig Account MyAccount -Local
+        Set-PsAzureDevOpsConfig Project MyProject -Local
+        Set-PsAzureDevOpsConfig Account MyAccount -Local
 
 
-        $localConfig = Get-VstsConfig -Local
-        $globalConfig = Get-VstsConfig -Global
-        $activeConfig = Get-VstsConfig
+        $localConfig = Get-PsAzureDevOpsConfig -Local
+        $globalConfig = Get-PsAzureDevOpsConfig -Global
+        $activeConfig = Get-PsAzureDevOpsConfig
 
         It "sets values to local config file"{
 
@@ -84,14 +84,14 @@ Describe "Set-VstsConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
        
-        Set-VstsConfig Project GlobalProject -Global
-        Set-VstsConfig Account GlobalAccount -Global
+        Set-PsAzureDevOpsConfig Project GlobalProject -Global
+        Set-PsAzureDevOpsConfig Account GlobalAccount -Global
 
-        Set-VstsConfig Account MyAccount -Local
+        Set-PsAzureDevOpsConfig Account MyAccount -Local
 
-        $localConfig = Get-VstsConfig -Local
-        $globalConfig = Get-VstsConfig -Global
-        $activeConfig = Get-VstsConfig
+        $localConfig = Get-PsAzureDevOpsConfig -Local
+        $globalConfig = Get-PsAzureDevOpsConfig -Global
+        $activeConfig = Get-PsAzureDevOpsConfig
 
         It "sets values to global config file"{
 
@@ -125,25 +125,25 @@ Describe "Set-VstsConfig" {
         New-Item  $localConfigFolder -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder
        
-        Set-VstsConfig Project MyProject -Local
-        Set-VstsConfig Account MyAccount -Local
+        Set-PsAzureDevOpsConfig Project MyProject -Local
+        Set-PsAzureDevOpsConfig Account MyAccount -Local
 
         $localConfigFolder2 = "TestDrive:\localConfig3\deep\nested"
         New-Item  $localConfigFolder2 -ItemType directory -ErrorAction SilentlyContinue
         Push-Location $localConfigFolder2
 
 
-        Set-VstsConfig Account MyAccountNested -Local
+        Set-PsAzureDevOpsConfig Account MyAccountNested -Local
 
-        $localConfigNested = Get-VstsConfig -Local
-        $activeConfigNested = Get-VstsConfig
+        $localConfigNested = Get-PsAzureDevOpsConfig -Local
+        $activeConfigNested = Get-PsAzureDevOpsConfig
 
 
         Pop-Location 
 
 
-        $localConfig = Get-VstsConfig -Local
-        $activeConfig = Get-VstsConfig
+        $localConfig = Get-PsAzureDevOpsConfig -Local
+        $activeConfig = Get-PsAzureDevOpsConfig
 
         It "sets values to local config file"{
 

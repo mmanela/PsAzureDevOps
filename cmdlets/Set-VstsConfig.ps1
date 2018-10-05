@@ -1,12 +1,12 @@
 
-function Set-VstsConfig
+function Set-PsAzureDevOpsConfig
 {
 <#
 .SYNOPSIS
 Sets values in a (local or global) config file.
 
 .DESCRIPTION
-Set-VstsConfig lets you set the value for certain properties of 
+Set-PsAzureDevOpsConfig lets you set the value for certain properties of 
 cmdlets. By setting these in the config file you no longer need to pass them
 to the functions. You can set a value in either a local or global config. 
 This lets you put local configs file in your projects and store more global 
@@ -27,17 +27,17 @@ This is the default.
 Flag indicates you want to set value in the global config file.
 
 .Example
-Set-VstsConfig -Name Project -Value MyProject
+Set-PsAzureDevOpsConfig -Name Project -Value MyProject
 
 Sets the property Project to the value MyProject in the global config
 
 .Example
-Set-VstsConfig -Name Project -Value MyProject -Local
+Set-PsAzureDevOpsConfig -Name Project -Value MyProject -Local
 
 Sets the property Project to the value MyProject in a local config
 
 .LINK
-about_PsVsts
+about_PsAzureDevOps
 
 #>
     [CmdletBinding()]
@@ -69,11 +69,11 @@ about_PsVsts
             $configPath = Join-Path (Get-Location) $configFileName
         }
 
-        $configObject = Get-VstsConfig -Local
+        $configObject = Get-PsAzureDevOpsConfig -Local
     }
     else {
         $configPath = $script:globalConfigPath
-        $configObject = Get-VstsConfig -Global
+        $configObject = Get-PsAzureDevOpsConfig -Global
     }
 
     if(-not (Test-Path $configPath)) {

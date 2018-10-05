@@ -1,3 +1,3 @@
 @echo off
 
-powershell -NoProfile -ExecutionPolicy bypass -command ". '%~dp0bootstrapper.ps1';Get-PsVsts %*"
+powershell -NoProfile -ExecutionPolicy bypass -command ". '%~dp0bootstrapper.ps1';Get-PsAzureDevOps %*"

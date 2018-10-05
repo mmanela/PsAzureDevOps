@@ -5,14 +5,14 @@ function Get-BuildArtifact {
 Gets latest build artifact by name
 
 .DESCRIPTION
-Get-BuildArtifact will query your VSTS project to get the recent build's artifact by name
+Get-BuildArtifact will query your AzureDevOps project to get the recent build's artifact by name
 
 .PARAMETER BuildDefinition
 The name of the build definition.  Can be inherited from a config file.
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSTS url is hello.visualstudio.com then this value should be hello.
+If your AzureDevOps url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
@@ -24,7 +24,7 @@ The artifact name to get artifact for.
 Get-Artifact -BuildDefinition myBuildDef -Account myAccount -Project myProject -Artifact myArtifactName
 
 .LINK
-about_PsVsts
+about_PsAzureDevOps
 
 #>
     [CmdletBinding()]

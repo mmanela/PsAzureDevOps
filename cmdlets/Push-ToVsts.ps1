@@ -1,11 +1,11 @@
 
-function Push-ToVsts {
+function Push-ToAzureDevOps {
 <#
 .SYNOPSIS
-Clones the current git repo to a VSTS project.
+Clones the current git repo to a AzureDevOps project.
 
 .DESCRIPTION
-Calling Push-ToVsts will clone your git repo to a VSTS project. If you don't specify a project it will try to use the default one.
+Calling Push-ToAzureDevOps will clone your git repo to a AzureDevOps project. If you don't specify a project it will try to use the default one.
 If no default project is configure it will error. You must run this command from inside of your git repo folder.
 
 .PARAMETER Repository
@@ -13,24 +13,24 @@ The repository name to use. Can be inherited from a config file.
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSTS url is hello.visualstudio.com then this value should be hello.
+If your AzureDevOps url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
 
 .Example
-Push-ToVsts 
+Push-ToAzureDevOps
 
 This will look for a git repo in the current directory and try to find an already configured project/account. 
 It will then create a repo in that project and push to it. 
 
 .Example
-Push-ToVsts -Project MyProject -Account MyAccount
+Push-ToAzureDevOps -Project MyProject -Account MyAccount
 
 Finds a git repo in current directory and adds it to the given account/project
 
 .LINK
-about_PsVsts
+about_PsAzureDevOps
 
 #>
     [CmdletBinding()]
@@ -58,12 +58,12 @@ about_PsVsts
    $remoteUrl = $repoResult.remoteUrl
 
    # Figure out if origin is already defined
-   # if so we try to use the PsVsts remote name
+   # if so we try to use the PsAzureDevOps remote name
    $currentRemotes = git remote
    $remoteName = "origin"
    if($currentRemotes -and $currentRemotes.Contains("origin")) {
-    Write-Host "origin remote already exists so create PsVsts remote"
-    $remoteName = "PsVsts"
+    Write-Host "origin remote already exists so create PsAzureDevOps remote"
+    $remoteName = "PsAzureDevOps"
    }
 
     Write-Host "Add remote $remoteName $remoteUrl"

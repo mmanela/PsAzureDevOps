@@ -1,12 +1,12 @@
 
-function Get-VstsConfig
+function Get-PsAzureDevOpsConfig
 {
 <#
 .SYNOPSIS
 Get the values stored in the config files
 
 .DESCRIPTION
-Get-VstsConfig gets the values in the active config files. You can choose to see values 
+Get-PsAzureDevOpsConfig gets the values in the active config files. You can choose to see values 
 defined in the local config file, global config file, or both.
 
 By default a combined result is shown which shows all config values that are 
@@ -20,18 +20,18 @@ Flag indicates you want to see the local config values
 Flag indicates you want to see the global config values
 
 .Example
-Get-VstsConfig 
+Get-PsAzureDevOpsConfig 
 
 Gets all the config values by take the global config and overriding matching properties 
 with local config values
 
 .Example
-Get-VstsConfig -Global
+Get-PsAzureDevOpsConfig -Global
 
 Gets all the global config values.
 
 .LINK
-about_PsVsts
+about_PsAzureDevOps
 
 #>
     [CmdletBinding()]

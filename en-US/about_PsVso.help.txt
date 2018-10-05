@@ -1,9 +1,9 @@
 TOPIC
-	PsVsts
+	PsAzureDevOps
 
 SYNOPSIS
-  PsVsts provides a suite of PowerShell functions that help automate interaction 
+  PsAzureDevOps provides a suite of PowerShell functions that help automate interaction 
   with  VisualStudio Online.
 
 DESCRIPTION
-	PsVsts helps make it so you never need to leave your command prompt.
+	PsAzureDevOps helps make it so you never need to leave your command prompt.

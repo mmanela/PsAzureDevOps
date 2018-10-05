@@ -5,14 +5,14 @@ function Get-Builds {
 Gets builds
 
 .DESCRIPTION
-Get-Builds will query your VSTS project to get the recent builds
+Get-Builds will query your AzureDevOps project to get the recent builds
 
 .PARAMETER BuildDefinition
 The name of the build definition.  Can be inherited from a config file.
 
 .PARAMETER Account
 The acount name to use. Can be inherited from a config file.
-If your VSTS url is hello.visualstudio.com then this value should be hello.
+If your AzureDevOps url is hello.visualstudio.com then this value should be hello.
 
 .PARAMETER Project
 The project name to use. Can be inherited from a config file.
@@ -24,7 +24,7 @@ The number of builds to show. Defaults to the 5.
 Get-Builds -BuildDefinition myBuildDef -Account myAccount -Project myProject
 
 .LINK
-about_PsVsts
+about_PsAzureDevOps
 
 #>
     [CmdletBinding()]

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>PsAzureDevOps</id>
+    <version>$version$</version>
+    <title>PsAzureDevOps</title>
+    <summary>PsAzureDevOps provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.</summary>
+    <description>PsAzureDevOps provides a suite of PowerShell functions that help automate interaction with VisualStudio Online. Some of the functions include Push-ToAzureDevOps (quickly take a local git repo and host it in a AzureDevOps project), Submit-PullRequest (submits a pull request), Get-Builds and Get-WorkItems.
+
+This module requires PowersShell version 3 or greater. No explicit dependency is taken to not force a user to upgrade unknowingly.
+    </description>
+    <tags>powershell vso vsts tfs git azuredevops azure build workitem azure azuredevops</tags>
+    <authors>Matthew Manela</authors>
+    <iconUrl>https://raw.githubusercontent.com/mmanela/PsAzureDevOps/master/PsAzureDevOps.png</iconUrl>
+    <projectUrl>https://github.com/mmanela/PsAzureDevOps</projectUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <releaseNotes>
+      * Clean up cmdlet definitions
+    </releaseNotes>
+  </metadata>
+  <files>
+    <file src="chocolatey\chocolateyinstall.ps1" target="tools"/>
+    <file src="chocolatey\setup.ps1" target="tools"/>  
+    <file src="PsAzureDevOps.psm1" target="tools" />
+    <file src="PsAzureDevOps.psd1" target="tools" />
+    <file src="*.ps1xml" target="tools" />
+    <file src="lib\VstsOM\*.*" target="tools\lib\VstsOM" />
+    <file src="functions\**\*.*" target="tools\functions" />
+    <file src="cmdlets\**\*.*" target="tools\cmdlets" />
+    <file src="en-US\*.*" target="tools\en-US" />
+  
+  </files>
+</package>
+

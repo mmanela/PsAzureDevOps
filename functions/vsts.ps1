@@ -1,4 +1,4 @@
-# Functions and variables used for communication with VSTS
+# Functions and variables used for communication with AzureDevOps
 
 
 $script:cached_HttpClient = $null
@@ -18,7 +18,7 @@ $script:getWorkItemsUrl =     "https://{0}.visualstudio.com/defaultcollection/_a
 $script:openWorkItemUrl=      "https://{0}.visualstudio.com/defaultcollection/_workitems/edit/{1}"
 
 # Override urls to run against a local TFS server
-if($PsVsts.OnPremiseMode) {
+if($PsAzureDevOps.OnPremiseMode) {
     $script:projectsUrl =         "http://{0}:8080/tfs/defaultcollection/_apis/projects?api-version=1.0"
     $script:gitReposUrl =         "http://{0}:8080/tfs/defaultcollection/{1}/_apis/git/repositories?api-version=1.0"
     $script:identityUrl =         "http://{0}:8080/tfs/defaultcollection/_api/_identity/CheckName?name={1}"
@@ -335,8 +335,8 @@ function getHttpClient() {
     $requestSettings = New-Object Microsoft.VisualStudio.Services.Common.VssHttpRequestSettings
     $messageHandler = New-Object Microsoft.VisualStudio.Services.Common.VssHttpMessageHandler($credentials, $requestSettings)
     $httpClient = New-Object System.Net.Http.HttpClient($messageHandler)
-    $httpClient.Timeout = [System.TimeSpan]::FromSeconds($PsVsts.TimeoutInSeconds)
-    $httpClient.DefaultRequestHeaders.Add("User-Agent", "PsVsts/1.0");
+    $httpClient.Timeout = [System.TimeSpan]::FromSeconds($PsAzureDevOps.TimeoutInSeconds)
+    $httpClient.DefaultRequestHeaders.Add("User-Agent", "PsAzureDevOps/1.0");
     
     $script:cached_HttpClient = $httpClient
 
