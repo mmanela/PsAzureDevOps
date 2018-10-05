@@ -1,6 +1,6 @@
-PsVsts
+PsAzureDevOps
 =======
-PsVsts provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.
+PsAzureDevOps provides a suite of PowerShell functions that help automate interaction with VisualStudio Online.
 
 Install
 ----
