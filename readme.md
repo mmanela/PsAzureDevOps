@@ -12,9 +12,19 @@ iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.p
 ```
 
 Install PsAzureDevOps
+
+From PsGallery
+```
+Install-Module -Name PsAzureDevOps 
+```
+
+From Chocolatey
+
 ```
 choco install PsAzureDevOps
 ```
+
+
 
 Once installed all the cmdlets should be auto-loaded and ready to use. If not just run
 ```
